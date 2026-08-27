@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>知识库 · 99 问答</title>
+<title>知识库 · 99 问答全景</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -137,7 +137,7 @@ body::before {
 .hero {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 5rem 2rem 3rem;
+  padding: 5rem 2rem 2.5rem;
   text-align: center;
   position: relative;
 }
@@ -184,7 +184,7 @@ body::before {
   font-size: 1.6rem;
   font-weight: 400;
   color: var(--text-muted);
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
   animation: fadeUp 0.8s ease 0.15s forwards;
   opacity: 0;
 }
@@ -254,7 +254,7 @@ body::before {
 .ai-section {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem 2rem 3rem;
+  padding: 1.5rem 2rem 2.5rem;
 }
 
 .ai-card {
@@ -401,7 +401,7 @@ body::before {
 .ai-send:hover { background: #e0b64e; }
 .ai-send:active { transform: scale(0.97); }
 
-/* ===== FILTERS ===== */
+/* ===== FILTERS & CONTROLS ===== */
 .filters {
   max-width: 1400px;
   margin: 0 auto;
@@ -446,11 +446,34 @@ body::before {
   font-weight: 700;
 }
 
+.filter-controls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toggle-all-btn {
+  padding: 5px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--accent);
+  font-family: var(--serif);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle-all-btn:hover {
+  background: var(--surface-3);
+  border-color: var(--accent-dim);
+}
+
 .filter-count {
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--text-dim);
-  margin-left: auto;
 }
 
 /* ===== Q&A LIST ===== */
@@ -459,7 +482,7 @@ body::before {
   margin: 0 auto;
   padding: 0 2rem 4rem;
   display: grid;
-  gap: 12px;
+  gap: 16px;
 }
 
 .qa-item {
@@ -469,8 +492,6 @@ body::before {
   overflow: hidden;
   transition: border-color 0.3s, box-shadow 0.3s;
   cursor: pointer;
-  opacity: 0;
-  animation: fadeUp 0.5s ease forwards;
 }
 
 .qa-item:hover {
@@ -479,7 +500,7 @@ body::before {
 }
 
 .qa-item.open {
-  border-color: var(--accent-dim);
+  border-color: rgba(212, 168, 67, 0.4);
 }
 
 .qa-question {
@@ -487,25 +508,28 @@ body::before {
   display: flex;
   align-items: flex-start;
   gap: 14px;
+  user-select: none;
 }
 
 .qa-number {
   font-family: var(--mono);
-  font-size: 0.7rem;
-  color: var(--accent-dim);
+  font-size: 0.75rem;
+  color: var(--accent);
   background: var(--accent-glow);
+  border: 1px solid rgba(212, 168, 67, 0.2);
   padding: 3px 10px;
   border-radius: 4px;
   white-space: nowrap;
-  margin-top: 3px;
+  margin-top: 2px;
   flex-shrink: 0;
 }
 
 .qa-q-text {
   flex: 1;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.05rem;
   line-height: 1.6;
+  color: var(--text);
 }
 
 .qa-tags {
@@ -513,11 +537,12 @@ body::before {
   gap: 6px;
   flex-shrink: 0;
   margin-top: 2px;
+  flex-wrap: wrap;
 }
 
 .qa-tag {
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   color: var(--tag-text);
   background: var(--tag-bg);
   border: 1px solid rgba(184, 168, 120, 0.15);
@@ -539,14 +564,17 @@ body::before {
   color: var(--accent);
 }
 
+/* 答案展示区域：默认展开 */
 .qa-answer {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.4s ease, padding 0.3s ease;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+  opacity: 0;
 }
 
 .qa-item.open .qa-answer {
-  max-height: 2000px;
+  max-height: 5000px;
+  opacity: 1;
 }
 
 .qa-answer-inner {
@@ -555,31 +583,45 @@ body::before {
 }
 
 .qa-answer-text {
-  color: var(--text-muted);
-  font-size: 0.9rem;
+  color: #c9c3b8;
+  font-size: 0.95rem;
   line-height: 1.9;
   border-left: 2px solid var(--accent-dim);
-  padding-left: 1rem;
+  padding-left: 1.2rem;
+}
+
+.qa-answer-text p {
+  margin-bottom: 0.8rem;
+}
+
+.qa-answer-text ul, .qa-answer-text ol {
+  margin: 0.6rem 0 0.8rem 1.2rem;
+}
+
+.qa-answer-text li {
+  margin-bottom: 0.4rem;
 }
 
 .qa-answer-text strong {
   color: var(--text);
+  font-weight: 700;
 }
 
 .qa-cross-links {
-  margin-top: 1rem;
+  margin-top: 1.2rem;
   display: flex;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .qa-cross-link {
   font-family: var(--mono);
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   color: var(--accent-dim);
   background: var(--accent-glow);
-  border: 1px solid rgba(212, 168, 67, 0.1);
-  padding: 3px 10px;
+  border: 1px solid rgba(212, 168, 67, 0.15);
+  padding: 4px 10px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
@@ -588,7 +630,8 @@ body::before {
 
 .qa-cross-link:hover {
   color: var(--accent);
-  border-color: var(--accent-dim);
+  border-color: var(--accent);
+  background: rgba(212, 168, 67, 0.2);
 }
 
 /* ===== EMPTY STATE ===== */
@@ -640,6 +683,7 @@ body::before {
   .qa-tags { display: none; }
   .nav-links { gap: 1rem; }
   .nav-links a { font-size: 0.75rem; }
+  .filter-controls { width: 100%; justify-content: space-between; margin-top: 10px; }
 }
 </style>
 </head>
@@ -678,7 +722,7 @@ body::before {
     </div>
   </div>
   <h1 class="hero-title">
-    <strong>99 个问答</strong>，一键检索，交叉溯源
+    <strong>99 个问答全景</strong> · 一键检索 · 交叉溯源
   </h1>
   <div class="search-container">
     <span class="search-icon">⌕</span>
@@ -714,9 +758,12 @@ body::before {
 
 <!-- FILTERS -->
 <div class="filters" id="filters">
-  <span class="filter-label">筛选</span>
+  <span class="filter-label">分类</span>
   <button class="filter-btn active" data-tag="all">全部</button>
-  <span class="filter-count" id="filterCount">显示 0 / 0</span>
+  <div class="filter-controls">
+    <button class="toggle-all-btn" id="toggleAllBtn" onclick="toggleAllCards()">折叠全部</button>
+    <span class="filter-count" id="filterCount">显示 0 / 0</span>
+  </div>
 </div>
 
 <!-- Q&A LIST -->
@@ -733,14 +780,13 @@ body::before {
   知识库 v1.0 · 持续更新中
 </footer>
 
-<!-- 1. 确保在 body 底部引入同级目录下的 QA_DATA.js -->
+<!-- 引入同目录下的 QA_DATA.js -->
 <script src="./QA_DATA.js"></script>
 
-<!-- 2. 执行核心渲染逻辑 -->
 <script>
-// 检查数据是否存在
+// 数据加载检测
 if (typeof QA_DATA === 'undefined') {
-  console.error('【错误】QA_DATA.js 未成功加载！请检查：1. 仓库根目录下是否存在 QA_DATA.js；2. 文件内是否以 const QA_DATA = [...] 开头。');
+  console.error('未检测到 QA_DATA 变量，请确认 QA_DATA.js 文件存在并已声明 const QA_DATA = [...]');
   window.QA_DATA = [];
 }
 
@@ -752,30 +798,33 @@ const emptyState = document.getElementById('emptyState');
 const aiMessages = document.getElementById('aiMessages');
 const aiInput = document.getElementById('aiInput');
 const aiSend = document.getElementById('aiSend');
+const toggleAllBtn = document.getElementById('toggleAllBtn');
 
 let activeTag = 'all';
 let searchQuery = '';
+let isAllExpanded = true; // 默认全部展开
 
 function initApp() {
   if (!QA_DATA || QA_DATA.length === 0) {
     emptyState.style.display = 'block';
-    emptyState.innerHTML = '<div class="icon">⚠️</div><p style="color:#d4a843;">未检测到问答数据，请检查 QA_DATA.js 文件是否正确上传并声明了 const QA_DATA 变量。</p>';
+    emptyState.innerHTML = '<div class="icon">⚠️</div><p style="color:#d4a843;">未检测到问答数据，请检查 QA_DATA.js 是否已上传至 GitHub 仓库根目录。</p>';
     return;
   }
 
-  // 更新统计
+  // 渲染顶部统计
   document.getElementById('totalCount').textContent = QA_DATA.length;
   const allTags = [...new Set(QA_DATA.flatMap(q => q.tags || []))].sort();
   document.getElementById('tagCount').textContent = allTags.length;
   document.getElementById('linkCount').textContent = QA_DATA.reduce((sum, q) => sum + (q.links ? q.links.length : 0), 0);
 
-  // 渲染筛选按钮
+  // 渲染分类筛选按钮
+  const controlsDiv = document.querySelector('.filter-controls');
   allTags.forEach(tag => {
     const btn = document.createElement('button');
     btn.className = 'filter-btn';
     btn.dataset.tag = tag;
     btn.textContent = tag;
-    filtersContainer.insertBefore(btn, filterCount);
+    filtersContainer.insertBefore(btn, controlsDiv);
   });
 
   renderList();
@@ -800,8 +849,9 @@ function renderList() {
   }
 
   emptyState.style.display = 'none';
-  qaList.innerHTML = filtered.map((item, i) => `
-    <div class="qa-item" data-id="${item.id}" style="animation-delay: ${Math.min(i * 0.04, 0.6)}s">
+  // 默认每一项都带 open 类名，直接展示内容
+  qaList.innerHTML = filtered.map((item) => `
+    <div class="qa-item open" data-id="${item.id}">
       <div class="qa-question" onclick="toggleQA(this.parentElement)">
         <span class="qa-number">#${String(item.id).padStart(2, '0')}</span>
         <span class="qa-q-text">${highlightText(item.q)}</span>
@@ -815,10 +865,10 @@ function renderList() {
           <div class="qa-answer-text">${highlightText(item.a)}</div>
           ${item.links && item.links.length > 0 ? `
             <div class="qa-cross-links">
-              <span style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);margin-right:4px;">关联 →</span>
+              <span style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);margin-right:4px;">关联条目 →</span>
               ${item.links.map(l => {
                 const linked = QA_DATA.find(q => q.id === l);
-                return linked ? `<a class="qa-cross-link" onclick="scrollToQA(${l})">#${String(l).padStart(2,'0')} ${linked.q.slice(0,12)}…</a>` : '';
+                return linked ? `<a class="qa-cross-link" onclick="scrollToQA(${l})">#${String(l).padStart(2,'0')} ${linked.q.slice(0,14)}…</a>` : '';
               }).join('')}
             </div>
           ` : ''}
@@ -839,6 +889,20 @@ function toggleQA(el) {
   el.classList.toggle('open');
 }
 
+// 一键展开 / 折叠全部卡片
+function toggleAllCards() {
+  const items = document.querySelectorAll('.qa-item');
+  isAllExpanded = !isAllExpanded;
+  items.forEach(item => {
+    if (isAllExpanded) {
+      item.classList.add('open');
+    } else {
+      item.classList.remove('open');
+    }
+  });
+  toggleAllBtn.textContent = isAllExpanded ? '折叠全部' : '展开全部';
+}
+
 function scrollToQA(id) {
   const el = document.querySelector(`.qa-item[data-id="${id}"]`);
   if (el) {
@@ -849,7 +913,7 @@ function scrollToQA(id) {
   }
 }
 
-// 筛选点击
+// 标签筛选
 filtersContainer.addEventListener('click', e => {
   if (!e.target.classList.contains('filter-btn')) return;
   filtersContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -858,7 +922,7 @@ filtersContainer.addEventListener('click', e => {
   renderList();
 });
 
-// 搜索
+// 实时搜索
 let searchTimer;
 searchInput.addEventListener('input', () => {
   clearTimeout(searchTimer);
@@ -868,7 +932,7 @@ searchInput.addEventListener('input', () => {
   }, 200);
 });
 
-// 快捷键
+// 快捷键支持
 document.addEventListener('keydown', e => {
   if (e.key === '/' && document.activeElement !== searchInput && document.activeElement !== aiInput) {
     e.preventDefault();
@@ -882,7 +946,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// AI 问答助手模拟
+// AI 智能问答
 function sendAIMessage() {
   const question = aiInput.value.trim();
   if (!question) return;
@@ -930,7 +994,7 @@ aiInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') sendAIMessage();
 });
 
-// 页面加载完成后启动
+// DOM 就绪后启动
 window.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
