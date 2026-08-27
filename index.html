@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知识库 · 99 问答</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0b09;
+  --surface: #161412;
+  --surface-2: #1e1b18;
+  --surface-3: #282420;
+  --accent: #d4a843;
+  --accent-dim: #a07e2e;
+  --accent-glow: rgba(212, 168, 67, 0.12);
+  --text: #e8e2d6;
+  --text-muted: #8a8278;
+  --text-dim: #5a554e;
+  --border: #2a2622;
+  --tag-bg: #1e1b16;
+  --tag-text: #b8a878;
+  --serif: 'Noto Serif SC', 'Songti SC', serif;
+  --mono: 'JetBrains Mono', 'Menlo', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--serif);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
+
+/* ===== HEADER ===== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(12, 11, 9, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+}
+
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 18px;
+  color: var(--bg);
+  font-family: var(--mono);
+}
+
+.logo-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.logo-version {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  background: var(--surface-2);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--accent); }
+.nav-links a.active { color: var(--accent); }
+
+/* ===== HERO ===== */
+.hero {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 5rem 2rem 3rem;
+  text-align: center;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-bottom: 2.5rem;
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-number {
+  font-family: var(--mono);
+  font-size: 2.8rem;
+  font-weight: 500;
+  color: var(--accent);
+  line-height: 1;
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+  letter-spacing: 0.08em;
+}
+
+.hero-title {
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-bottom: 2.5rem;
+  animation: fadeUp 0.8s ease 0.15s forwards;
+  opacity: 0;
+}
+
+.hero-title strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* ===== SEARCH ===== */
+.search-container {
+  max-width: 680px;
+  margin: 0 auto;
+  position: relative;
+  animation: fadeUp 0.8s ease 0.3s forwards;
+  opacity: 0;
+}
+
+.search-box {
+  width: 100%;
+  padding: 16px 20px 16px 52px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-box::placeholder { color: var(--text-dim); }
+
+.search-box:focus {
+  border-color: var(--accent-dim);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-dim);
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+
+.search-hint {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  font-family: var(--mono);
+}
+
+.search-hint kbd {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+}
+
+/* ===== AI CHAT SECTION ===== */
+.ai-section {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 2rem 3rem;
+}
+
+.ai-card {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp 0.8s ease 0.45s forwards;
+  opacity: 0;
+}
+
+.ai-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(212, 168, 67, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.ai-info { flex: 1; }
+
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(212, 168, 67, 0.1);
+  border: 1px solid rgba(212, 168, 67, 0.2);
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+  letter-spacing: 0.06em;
+}
+
+.ai-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.ai-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.ai-desc {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.ai-chat-area {
+  flex: 1;
+  max-width: 480px;
+}
+
+.ai-messages {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  height: 200px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+.ai-msg {
+  margin-bottom: 0.8rem;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.ai-msg.user {
+  background: var(--surface-3);
+  color: var(--text);
+  margin-left: 2rem;
+}
+
+.ai-msg.bot {
+  background: var(--accent-glow);
+  border: 1px solid rgba(212, 168, 67, 0.1);
+  margin-right: 2rem;
+}
+
+.ai-msg .source {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--accent-dim);
+  margin-top: 6px;
+  cursor: pointer;
+}
+
+.ai-msg .source:hover { color: var(--accent); }
+
+.ai-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.ai-input {
+  flex: 1;
+  padding: 10px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.ai-input:focus { border-color: var(--accent-dim); }
+
+.ai-send {
+  padding: 10px 20px;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: 8px;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.ai-send:hover { background: #e0b64e; }
+.ai-send:active { transform: scale(0.97); }
+
+/* ===== FILTERS ===== */
+.filters {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem 1.5rem;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  animation: fadeUp 0.8s ease 0.5s forwards;
+  opacity: 0;
+}
+
+.filter-label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  margin-right: 8px;
+  letter-spacing: 0.06em;
+}
+
+.filter-btn {
+  padding: 6px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text-muted);
+  font-family: var(--serif);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn:hover {
+  border-color: var(--accent-dim);
+  color: var(--text);
+}
+
+.filter-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+  font-weight: 700;
+}
+
+.filter-count {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-left: auto;
+}
+
+/* ===== Q&A LIST ===== */
+.qa-list {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+  display: grid;
+  gap: 12px;
+}
+
+.qa-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeUp 0.5s ease forwards;
+}
+
+.qa-item:hover {
+  border-color: var(--accent-dim);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+.qa-item.open {
+  border-color: var(--accent-dim);
+}
+
+.qa-question {
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.qa-number {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--accent-dim);
+  background: var(--accent-glow);
+  padding: 3px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.qa-q-text {
+  flex: 1;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.qa-tags {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.qa-tag {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--tag-text);
+  background: var(--tag-bg);
+  border: 1px solid rgba(184, 168, 120, 0.15);
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+.qa-toggle {
+  color: var(--text-dim);
+  font-size: 1.2rem;
+  transition: transform 0.3s, color 0.3s;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.qa-item.open .qa-toggle {
+  transform: rotate(45deg);
+  color: var(--accent);
+}
+
+.qa-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+}
+
+.qa-item.open .qa-answer {
+  max-height: 800px;
+}
+
+.qa-answer-inner {
+  padding: 0 1.5rem 1.5rem;
+  padding-left: calc(1.5rem + 14px + 44px);
+}
+
+.qa-answer-text {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.9;
+  border-left: 2px solid var(--accent-dim);
+  padding-left: 1rem;
+}
+
+.qa-answer-text strong {
+  color: var(--text);
+}
+
+.qa-cross-links {
+  margin-top: 1rem;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.qa-cross-link {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--accent-dim);
+  background: var(--accent-glow);
+  border: 1px solid rgba(212, 168, 67, 0.1);
+  padding: 3px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.qa-cross-link:hover {
+  color: var(--accent);
+  border-color: var(--accent-dim);
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-dim);
+}
+
+.empty-state .icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.3;
+}
+
+.empty-state p {
+  font-size: 0.9rem;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  font-family: var(--mono);
+  letter-spacing: 0.04em;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .hero-stats { gap: 1.5rem; }
+  .stat-number { font-size: 2rem; }
+  .ai-card { flex-direction: column; gap: 1.5rem; padding: 1.5rem; }
+  .ai-chat-area { max-width: 100%; width: 100%; }
+  .qa-answer-inner { padding-left: 1.5rem; }
+  .qa-tags { display: none; }
+  .nav-links { gap: 1rem; }
+  .nav-links a { font-size: 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-icon">KB</div>
+      <span class="logo-text">知识库</span>
+      <span class="logo-version">v1.0</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#" class="active">问答</a>
+      <a href="#ai-section">AI 助手</a>
+      <a href="#">关于</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-number" id="totalCount">99</span>
+      <span class="stat-label">问答条目</span>
+    </div>
+    <div class="stat">
+      <span class="stat-number" id="tagCount">0</span>
+      <span class="stat-label">知识标签</span>
+    </div>
+    <div class="stat">
+      <span class="stat-number" id="linkCount">0</span>
+      <span class="stat-label">交叉链接</span>
+    </div>
+  </div>
+  <h1 class="hero-title">
+    <strong>99 个问答</strong>，一键检索，交叉溯源
+  </h1>
+  <div class="search-container">
+    <span class="search-icon">⌕</span>
+    <input type="text" class="search-box" id="searchInput" placeholder="搜索问题、关键词、标签……" autocomplete="off">
+    <div class="search-hint">按 <kbd>/</kbd> 聚焦搜索 · 按 <kbd>Esc</kbd> 清除</div>
+  </div>
+</section>
+
+<!-- AI CHAT -->
+<section class="ai-section" id="ai-section">
+  <div class="ai-card">
+    <div class="ai-info">
+      <div class="ai-badge">BETA</div>
+      <h2 class="ai-title">智能问答助手</h2>
+      <p class="ai-desc">
+        有疑问？直接提问，AI 基于知识库原文为你解答。<br>
+        每个回答都会标注来源条目，方便溯源验证。
+      </p>
+    </div>
+    <div class="ai-chat-area">
+      <div class="ai-messages" id="aiMessages">
+        <div class="ai-msg bot">
+          你好！我可以基于知识库的 99 个问答为你解答。试试问我点什么？
+        </div>
+      </div>
+      <div class="ai-input-row">
+        <input type="text" class="ai-input" id="aiInput" placeholder="输入你的问题……">
+        <button class="ai-send" id="aiSend">提问</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FILTERS -->
+<div class="filters" id="filters">
+  <span class="filter-label">筛选</span>
+  <button class="filter-btn active" data-tag="all">全部</button>
+  <span class="filter-count" id="filterCount">显示 99 / 99</span>
+</div>
+
+<!-- Q&A LIST -->
+<div class="qa-list" id="qaList"></div>
+
+<!-- EMPTY STATE -->
+<div class="empty-state" id="emptyState" style="display:none;">
+  <div class="icon">⌕</div>
+  <p>没有找到匹配的结果，试试其他关键词？</p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  知识库 v1.0 · 共 99 条问答 · 持续更新中
+</footer>
+
+<script>
+// ============================================================
+//  DATA: 在这里替换为你自己的 99 个问答
+//  格式: { id, q: 问题, a: 答案, tags: [标签], links: [关联ID] }
+// ============================================================
+const QA_DATA = [
+  {
+    id: 1,
+    q: "什么是价值投资的核心理念？",
+    a: "价值投资的核心是<strong>以低于内在价值的价格买入优质资产</strong>。这要求投资者具备独立判断能力，不被市场情绪左右，专注于企业的基本面分析，包括盈利能力、护城河、管理层质量等。",
+    tags: ["投资理念", "基础概念"],
+    links: [2, 5, 12]
+  },
+  {
+    id: 2,
+    q: "如何评估一家公司的内在价值？",
+    a: "内在价值可以通过<strong>未来现金流的折现值</strong>来估算。关键步骤包括：预测未来自由现金流、选择合适的折现率、计算终值。实践中还需要结合市盈率、市净率等相对估值指标进行交叉验证。",
+    tags: ["估值方法", "基础概念"],
+    links: [1, 3, 8]
+  },
+  {
+    id: 3,
+    q: "什么是安全边际？为什么它很重要？",
+    a: "安全边际是指<strong>买入价格与内在价值之间的差额</strong>。它为投资者提供了缓冲空间，以应对分析错误或不可预见的负面因素。安全边际越大，投资风险越低，潜在回报越高。",
+    tags: ["风险管理", "投资理念"],
+    links: [1, 2, 7]
+  },
+  {
+    id: 4,
+    q: "如何识别一家公司的护城河？",
+    a: "护城河是企业的<strong>持久竞争优势</strong>，主要类型包括：品牌优势（如茅台）、网络效应（如微信）、转换成本（如企业软件）、成本优势（如规模经济）、以及无形资产（如专利、牌照）。",
+    tags: ["企业分析", "竞争优势"],
+    links: [5, 6, 10]
+  },
+  {
+    id: 5,
+    q: "长期持有策略的优缺点是什么？",
+    a: "优点：<strong>复利效应显著</strong>、交易成本低、避免频繁决策的错误。缺点：需要极强的耐心和信念、可能错过阶段性机会、需要持续跟踪企业基本面变化。关键在于选对标的并坚持持有。",
+    tags: ["投资策略", "投资理念"],
+    links: [1, 3, 15]
+  },
+  {
+    id: 6,
+    q: "管理层质量如何影响投资决策？",
+    a: "优秀的管理层应具备<strong>诚信、能力和股东导向</strong>三个特质。评估指标包括：资本配置历史、薪酬合理性、信息披露透明度、以及在逆境中的应对能力。管理层是企业护城河的重要组成部分。",
+    tags: ["企业分析", "管理层"],
+    links: [4, 10, 18]
+  },
+  {
+    id: 7,
+    q: "如何控制投资组合的风险？",
+    a: "风险管理的核心方法：<strong>分散投资</strong>（不同行业、不同市值）、设定仓位上限、保持足够现金储备、以及定期再平衡。同时要避免使用杠杆，因为杠杆会放大波动性并可能导致强制平仓。",
+    tags: ["风险管理", "投资组合"],
+    links: [3, 11, 20]
+  },
+  {
+    id: 8,
+    q: "市盈率（P/E）在估值中如何正确使用？",
+    a: "市盈率是最常用的估值指标，但需要<strong>结合增长率、盈利质量和行业特征</strong>来解读。低市盈率不一定便宜（可能是盈利即将下滑），高市盈率也不一定贵（可能是高增长的合理反映）。建议使用 PEG 指标进行修正。",
+    tags: ["估值方法", "财务指标"],
+    links: [2, 9, 14]
+  },
+  {
+    id: 9,
+    q: "如何阅读和分析财务报表？",
+    a: "重点关注三张表：<strong>利润表</strong>（盈利能力趋势）、<strong>资产负债表</strong>（财务健康度）、<strong>现金流量表</strong>（经营质量）。特别注意：经营现金流是否匹配净利润、负债率是否合理、应收账款周转是否正常。",
+    tags: ["财务分析", "基础概念"],
+    links: [8, 13, 14]
+  },
+  {
+    id: 10,
+    q: "什么是经济护城河的持续性？",
+    a: "护城河的持续性取决于<strong>竞争优势的来源是否可持续</strong>。技术护城河可能被颠覆，品牌护城河更持久。评估时需关注：行业变化速度、竞争格局演变、以及公司是否在持续加固护城河。",
+    tags: ["竞争优势", "企业分析"],
+    links: [4, 6, 16]
+  },
+  // ---- 以下为示例数据，你可以继续添加到 99 条 ----
+  {
+    id: 11,
+    q: "如何判断市场是否处于泡沫状态？",
+    a: "市场泡沫的特征：<strong>估值远超历史均值</strong>、投机情绪浓厚、杠杆率飙升、新叙事取代基本面分析。但判断泡沫的 timing 极其困难，更好的策略是坚持安全边际原则，不参与投机。",
+    tags: ["市场分析", "风险管理"],
+    links: [3, 7, 19]
+  },
+  {
+    id: 12,
+    q: "复利效应在投资中有多重要？",
+    a: "爱因斯坦称复利为"世界第八大奇迹"。<strong>年化 15% 的回报率在 20 年后将增长 16 倍</strong>。复利的关键在于：尽早开始、保持稳定回报率、避免大幅亏损（因为亏损后需要更高的回报才能回本）。",
+    tags: ["投资理念", "基础概念"],
+    links: [1, 5, 15]
+  },
+  {
+    id: 13,
+    q: "自由现金流为什么比净利润更重要？",
+    a: "净利润可以通过会计手段调节，但<strong>自由现金流是真金白银</strong>。它代表企业在维持运营和必要投资后，实际可分配给股东的现金。持续产生强劲自由现金流的企业，才是真正的好企业。",
+    tags: ["财务分析", "财务指标"],
+    links: [9, 14, 2]
+  },
+  {
+    id: 14,
+    q: "ROE（净资产收益率）的合理范围是多少？",
+    a: "一般来说，<strong>持续 ROE 超过 15% 的企业</strong>具有较好的盈利能力。但需注意：高杠杆可以人为提高 ROE（杜邦分析）、一次性收益会扭曲数据、不同行业的 ROE 基准不同。应关注 ROE 的趋势和质量。",
+    tags: ["财务指标", "财务分析"],
+    links: [8, 9, 13]
+  },
+  {
+    id: 15,
+    q: "何时应该卖出一只股票？",
+    a: "卖出的理由：<strong>基本面恶化</strong>（护城河被侵蚀）、估值严重过高、发现更好的投资机会、以及当初的买入逻辑不再成立。不应因为短期价格波动或市场恐慌而卖出。",
+    tags: ["投资策略", "投资理念"],
+    links: [5, 1, 11]
+  },
+  {
+    id: 16,
+    q: "行业分析在投资中的作用是什么？",
+    a: "行业分析帮助理解<strong>企业所处的竞争环境</strong>。关键维度：行业增长空间、竞争格局（波特五力）、监管环境、技术变革趋势。好行业中的普通公司，往往比差行业中的好公司表现更好。",
+    tags: ["行业分析", "企业分析"],
+    links: [10, 4, 17]
+  },
+  {
+    id: 17,
+    q: "如何评估一个行业的进入壁垒？",
+    a: "进入壁垒包括：<strong>资本需求、技术门槛、品牌认知、规模经济、监管许可、网络效应</strong>。高进入壁垒保护现有企业的利润空间。投资者应优先选择进入壁垒高的行业中的龙头企业。",
+    tags: ["行业分析", "竞争优势"],
+    links: [16, 4, 10]
+  },
+  {
+    id: 18,
+    q: "股东回报的三种方式是什么？",
+    a: "企业回报股东的三种方式：<strong>分红、回购股票、以及通过再投资推动股价上涨</strong>。优秀的管理层会根据股价与内在价值的关系，选择最优的资本配置方式。",
+    tags: ["管理层", "投资回报"],
+    links: [6, 5, 12]
+  },
+  {
+    id: 19,
+    q: "如何在市场恐慌中保持理性？",
+    a: "关键策略：<strong>提前制定投资计划并严格执行</strong>、关注企业基本面而非股价、保持充足的现金储备以抓住机会、以及回顾历史中市场总会恢复的事实。恐慌是价值投资者最好的朋友。",
+    tags: ["市场分析", "投资心理"],
+    links: [11, 1, 20]
+  },
+  {
+    id: 20,
+    q: "资产配置的基本原则是什么？",
+    a: "核心原则：<strong>根据风险承受能力和投资期限分配资产</strong>。股票提供长期增长，债券提供稳定收益和保护，现金提供流动性。年轻投资者可更多配置股票，临近退休则应增加债券比例。",
+    tags: ["投资组合", "资产配置"],
+    links: [7, 5, 19]
+  }
+  // 继续添加到 99 条...
+  // 提示: 复制上面的格式，修改 id、q、a、tags、links 即可
+];
+
+// ============================================================
+//  APP LOGIC
+// ============================================================
+
+const qaList = document.getElementById('qaList');
+const searchInput = document.getElementById('searchInput');
+const filtersContainer = document.getElementById('filters');
+const filterCount = document.getElementById('filterCount');
+const emptyState = document.getElementById('emptyState');
+const aiMessages = document.getElementById('aiMessages');
+const aiInput = document.getElementById('aiInput');
+const aiSend = document.getElementById('aiSend');
+
+// Collect all unique tags
+const allTags = [...new Set(QA_DATA.flatMap(q => q.tags))].sort();
+const tagCount = document.getElementById('tagCount');
+const linkCount = document.getElementById('linkCount');
+tagCount.textContent = allTags.length;
+linkCount.textContent = QA_DATA.reduce((sum, q) => sum + q.links.length, 0);
+
+// Render filter buttons
+allTags.forEach(tag => {
+  const btn = document.createElement('button');
+  btn.className = 'filter-btn';
+  btn.dataset.tag = tag;
+  btn.textContent = tag;
+  filtersContainer.insertBefore(btn, filterCount);
+});
+
+let activeTag = 'all';
+let searchQuery = '';
+
+function renderList() {
+  const filtered = QA_DATA.filter(item => {
+    const matchTag = activeTag === 'all' || item.tags.includes(activeTag);
+    const matchSearch = !searchQuery ||
+      item.q.toLowerCase().includes(searchQuery) ||
+      item.a.toLowerCase().includes(searchQuery) ||
+      item.tags.some(t => t.toLowerCase().includes(searchQuery));
+    return matchTag && matchSearch;
+  });
+
+  filterCount.textContent = `显示 ${filtered.length} / ${QA_DATA.length}`;
+
+  if (filtered.length === 0) {
+    qaList.innerHTML = '';
+    emptyState.style.display = 'block';
+    return;
+  }
+
+  emptyState.style.display = 'none';
+  qaList.innerHTML = filtered.map((item, i) => `
+    <div class="qa-item" data-id="${item.id}" style="animation-delay: ${Math.min(i * 0.04, 0.6)}s">
+      <div class="qa-question" onclick="toggleQA(this.parentElement)">
+        <span class="qa-number">#${String(item.id).padStart(2, '0')}</span>
+        <span class="qa-q-text">${highlightText(item.q)}</span>
+        <div class="qa-tags">
+          ${item.tags.map(t => `<span class="qa-tag">${t}</span>`).join('')}
+        </div>
+        <span class="qa-toggle">+</span>
+      </div>
+      <div class="qa-answer">
+        <div class="qa-answer-inner">
+          <div class="qa-answer-text">${highlightText(item.a)}</div>
+          ${item.links.length > 0 ? `
+            <div class="qa-cross-links">
+              <span style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);margin-right:4px;">关联 →</span>
+              ${item.links.map(l => {
+                const linked = QA_DATA.find(q => q.id === l);
+                return linked ? `<a class="qa-cross-link" onclick="scrollToQA(${l})">#${String(l).padStart(2,'0')} ${linked.q.slice(0,12)}…</a>` : '';
+              }).join('')}
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function highlightText(text) {
+  if (!searchQuery) return text;
+  const regex = new RegExp(`(${searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+  return text.replace(regex, '<mark style="background:var(--accent);color:var(--bg);padding:0 2px;border-radius:2px;">$1</mark>');
+}
+
+function toggleQA(el) {
+  el.classList.toggle('open');
+}
+
+function scrollToQA(id) {
+  const el = document.querySelector(`.qa-item[data-id="${id}"]`);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('open');
+    el.style.boxShadow = '0 0 0 2px var(--accent)';
+    setTimeout(() => el.style.boxShadow = '', 2000);
+  }
+}
+
+// Filter click
+filtersContainer.addEventListener('click', e => {
+  if (!e.target.classList.contains('filter-btn')) return;
+  filtersContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeTag = e.target.dataset.tag;
+  renderList();
+});
+
+// Search
+let searchTimer;
+searchInput.addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    searchQuery = searchInput.value.trim().toLowerCase();
+    renderList();
+  }, 200);
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement !== searchInput && document.activeElement !== aiInput) {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape') {
+    searchInput.value = '';
+    searchQuery = '';
+    searchInput.blur();
+    renderList();
+  }
+});
+
+// AI Chat
+function sendAIMessage() {
+  const question = aiInput.value.trim();
+  if (!question) return;
+
+  // User message
+  const userDiv = document.createElement('div');
+  userDiv.className = 'ai-msg user';
+  userDiv.textContent = question;
+  aiMessages.appendChild(userDiv);
+
+  // Find relevant Q&As
+  const keywords = question.toLowerCase().split(/[\s,，。？！?!.]+/).filter(k => k.length > 1);
+  const scored = QA_DATA.map(item => {
+    let score = 0;
+    const text = (item.q + ' ' + item.a + ' ' + item.tags.join(' ')).toLowerCase();
+    keywords.forEach(kw => {
+      if (text.includes(kw)) score += 1;
+      if (item.q.toLowerCase().includes(kw)) score += 2;
+    });
+    return { ...item, score };
+  }).filter(item => item.score > 0).sort((a, b) => b.score - a.score).slice(0, 3);
+
+  // Bot response
+  const botDiv = document.createElement('div');
+  botDiv.className = 'ai-msg bot';
+
+  if (scoreed.length > 0) {
+    let response = `根据知识库，找到 ${scoreed.length} 个相关条目：\n\n`;
+    scored.forEach((item, i) => {
+      const plainA = item.a.replace(/<[^>]*>/g, '');
+      response += `${i + 1}. ${plainA.slice(0, 80)}…\n`;
+      response += `   📎 来源: #${String(item.id).padStart(2, '0')}「${item.q.slice(0, 20)}」\n\n`;
+    });
+    botDiv.innerHTML = response.replace(/\n/g, '<br>').replace(/📎 来源: #(\d+)「([^」]+)」/g,
+      '<span class="source" onclick="scrollToQA($1)">📎 来源: #$1「$2」</span>');
+  } else {
+    botDiv.innerHTML = '抱歉，知识库中暂未找到与该问题直接相关的内容。<br>试试换个关键词提问？';
+  }
+
+  aiMessages.appendChild(botDiv);
+  aiMessages.scrollTop = aiMessages.scrollHeight;
+  aiInput.value = '';
+}
+
+aiSend.addEventListener('click', sendAIMessage);
+aiInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendAIMessage();
+});
+
+// Initial render
+renderList();
+</script>
+</body>
+</html>
