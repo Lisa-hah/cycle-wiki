@@ -1,3 +1,5 @@
+JavaScript
+
 const QA_DATA = [
   {
     id: 1,
@@ -692,4 +694,6 @@ const QA_DATA = [
     tags: ["黄金见顶", "避险溢价", "黄金股", "资产配置优先级"],
     links: [9, 14, 56, 81, 95]
   }
+JavaScript
 ];
+
