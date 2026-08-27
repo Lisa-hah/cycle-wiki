@@ -6,7 +6,6 @@
 <title>知识库 · 99 问答</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="QA_DATA.js"></script>
 <style>
 :root {
   --bg: #0c0b09;
@@ -547,7 +546,7 @@ body::before {
 }
 
 .qa-item.open .qa-answer {
-  max-height: 800px;
+  max-height: 2000px;
 }
 
 .qa-answer-inner {
@@ -666,7 +665,7 @@ body::before {
 <section class="hero">
   <div class="hero-stats">
     <div class="stat">
-      <span class="stat-number" id="totalCount">99</span>
+      <span class="stat-number" id="totalCount">0</span>
       <span class="stat-label">问答条目</span>
     </div>
     <div class="stat">
@@ -717,7 +716,7 @@ body::before {
 <div class="filters" id="filters">
   <span class="filter-label">筛选</span>
   <button class="filter-btn active" data-tag="all">全部</button>
-  <span class="filter-count" id="filterCount">显示 99 / 99</span>
+  <span class="filter-count" id="filterCount">显示 0 / 0</span>
 </div>
 
 <!-- Q&A LIST -->
@@ -734,19 +733,16 @@ body::before {
   知识库 v1.0 · 持续更新中
 </footer>
 
-<script>
-// ============================================================
-//  QA_DATA 由外部 QA_DATA.js 提供（通过 <script src> 引入）
-//  如果加载失败则使用空数组兜底
-// ============================================================
-if (typeof QA_DATA === 'undefined') {
-  console.warn('QA_DATA.js 未加载，请确认文件存在于同目录下');
-  var QA_DATA = [];
-}
+<!-- 1. 确保在 body 底部引入同级目录下的 QA_DATA.js -->
+<script src="./QA_DATA.js"></script>
 
-// ============================================================
-//  APP LOGIC
-// ============================================================
+<!-- 2. 执行核心渲染逻辑 -->
+<script>
+// 检查数据是否存在
+if (typeof QA_DATA === 'undefined') {
+  console.error('【错误】QA_DATA.js 未成功加载！请检查：1. 仓库根目录下是否存在 QA_DATA.js；2. 文件内是否以 const QA_DATA = [...] 开头。');
+  window.QA_DATA = [];
+}
 
 const qaList = document.getElementById('qaList');
 const searchInput = document.getElementById('searchInput');
@@ -757,34 +753,41 @@ const aiMessages = document.getElementById('aiMessages');
 const aiInput = document.getElementById('aiInput');
 const aiSend = document.getElementById('aiSend');
 
-// 动态更新顶部统计
-document.getElementById('totalCount').textContent = QA_DATA.length;
-
-const allTags = [...new Set(QA_DATA.flatMap(q => q.tags))].sort();
-const tagCount = document.getElementById('tagCount');
-const linkCount = document.getElementById('linkCount');
-tagCount.textContent = allTags.length;
-linkCount.textContent = QA_DATA.reduce((sum, q) => sum + q.links.length, 0);
-
-// 渲染筛选按钮
-allTags.forEach(tag => {
-  const btn = document.createElement('button');
-  btn.className = 'filter-btn';
-  btn.dataset.tag = tag;
-  btn.textContent = tag;
-  filtersContainer.insertBefore(btn, filterCount);
-});
-
 let activeTag = 'all';
 let searchQuery = '';
 
+function initApp() {
+  if (!QA_DATA || QA_DATA.length === 0) {
+    emptyState.style.display = 'block';
+    emptyState.innerHTML = '<div class="icon">⚠️</div><p style="color:#d4a843;">未检测到问答数据，请检查 QA_DATA.js 文件是否正确上传并声明了 const QA_DATA 变量。</p>';
+    return;
+  }
+
+  // 更新统计
+  document.getElementById('totalCount').textContent = QA_DATA.length;
+  const allTags = [...new Set(QA_DATA.flatMap(q => q.tags || []))].sort();
+  document.getElementById('tagCount').textContent = allTags.length;
+  document.getElementById('linkCount').textContent = QA_DATA.reduce((sum, q) => sum + (q.links ? q.links.length : 0), 0);
+
+  // 渲染筛选按钮
+  allTags.forEach(tag => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn';
+    btn.dataset.tag = tag;
+    btn.textContent = tag;
+    filtersContainer.insertBefore(btn, filterCount);
+  });
+
+  renderList();
+}
+
 function renderList() {
   const filtered = QA_DATA.filter(item => {
-    const matchTag = activeTag === 'all' || item.tags.includes(activeTag);
+    const matchTag = activeTag === 'all' || (item.tags && item.tags.includes(activeTag));
     const matchSearch = !searchQuery ||
-      item.q.toLowerCase().includes(searchQuery) ||
-      item.a.toLowerCase().includes(searchQuery) ||
-      item.tags.some(t => t.toLowerCase().includes(searchQuery));
+      (item.q && item.q.toLowerCase().includes(searchQuery)) ||
+      (item.a && item.a.toLowerCase().includes(searchQuery)) ||
+      (item.tags && item.tags.some(t => t.toLowerCase().includes(searchQuery)));
     return matchTag && matchSearch;
   });
 
@@ -803,14 +806,14 @@ function renderList() {
         <span class="qa-number">#${String(item.id).padStart(2, '0')}</span>
         <span class="qa-q-text">${highlightText(item.q)}</span>
         <div class="qa-tags">
-          ${item.tags.map(t => `<span class="qa-tag">${t}</span>`).join('')}
+          ${(item.tags || []).map(t => `<span class="qa-tag">${t}</span>`).join('')}
         </div>
         <span class="qa-toggle">+</span>
       </div>
       <div class="qa-answer">
         <div class="qa-answer-inner">
           <div class="qa-answer-text">${highlightText(item.a)}</div>
-          ${item.links.length > 0 ? `
+          ${item.links && item.links.length > 0 ? `
             <div class="qa-cross-links">
               <span style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);margin-right:4px;">关联 →</span>
               ${item.links.map(l => {
@@ -826,6 +829,7 @@ function renderList() {
 }
 
 function highlightText(text) {
+  if (!text) return '';
   if (!searchQuery) return text;
   const regex = new RegExp(`(${searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
   return text.replace(regex, '<mark style="background:var(--accent);color:var(--bg);padding:0 2px;border-radius:2px;">$1</mark>');
@@ -864,7 +868,7 @@ searchInput.addEventListener('input', () => {
   }, 200);
 });
 
-// 键盘快捷键
+// 快捷键
 document.addEventListener('keydown', e => {
   if (e.key === '/' && document.activeElement !== searchInput && document.activeElement !== aiInput) {
     e.preventDefault();
@@ -878,7 +882,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// AI 对话
+// AI 问答助手模拟
 function sendAIMessage() {
   const question = aiInput.value.trim();
   if (!question) return;
@@ -891,10 +895,10 @@ function sendAIMessage() {
   const keywords = question.toLowerCase().split(/[\s,，。？！?!.]+/).filter(k => k.length > 1);
   const scored = QA_DATA.map(item => {
     let score = 0;
-    const text = (item.q + ' ' + item.a + ' ' + item.tags.join(' ')).toLowerCase();
+    const text = (item.q + ' ' + item.a + ' ' + (item.tags || []).join(' ')).toLowerCase();
     keywords.forEach(kw => {
       if (text.includes(kw)) score += 1;
-      if (item.q.toLowerCase().includes(kw)) score += 2;
+      if (item.q && item.q.toLowerCase().includes(kw)) score += 2;
     });
     return { ...item, score };
   }).filter(item => item.score > 0).sort((a, b) => b.score - a.score).slice(0, 3);
@@ -905,7 +909,7 @@ function sendAIMessage() {
   if (scored.length > 0) {
     let html = `<div style="margin-bottom:8px;">根据知识库，找到 ${scored.length} 个相关条目：</div>`;
     scored.forEach((item, i) => {
-      const plainA = item.a.replace(/<[^>]*>/g, '');
+      const plainA = (item.a || '').replace(/<[^>]*>/g, '');
       html += `<div style="margin-bottom:10px;">`;
       html += `<strong>${i + 1}.</strong> ${plainA.slice(0, 100)}…<br>`;
       html += `<span class="source" onclick="scrollToQA(${item.id})">📎 来源: #${String(item.id).padStart(2, '0')}「${item.q.slice(0, 25)}」</span>`;
@@ -926,8 +930,8 @@ aiInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') sendAIMessage();
 });
 
-// 初始化渲染
-renderList();
+// 页面加载完成后启动
+window.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
 </html>
