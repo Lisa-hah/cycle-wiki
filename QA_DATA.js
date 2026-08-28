@@ -1,7 +1,7 @@
 /**
  * 拙大叔宏观周期问答全集（全部 98 篇完整原文数据）
  * 包含 1-98 个问答的完整原文、标题、日期、提问者及分类检索辅助函数。
- * 格式兼容 ES Module, CommonJS 以及浏览器全局变量 (window.QA_DATASET_98)
+ * 格式兼容 ES Module, CommonJS 以及浏览器全局变量 (window.QA_DATA)
  */
 
 (function (root, factory) {
@@ -10,11 +10,11 @@
   } else if (typeof module === 'object' && module.exports) {
     module.exports = factory();
   } else {
-    root.QA_DATASET_98 = factory();
+    root.QA_DATA = factory();
   }
 }(typeof self !== 'undefined' ? self : this, function () {
 
-  const QA_DATA = [
+  const qaList = [
   {
     "id": 1,
     "title": "1. 为什么第一幕不建议买短期美债?美股、美债与美元的“三位一体”危机梯次演进全景(2026年8月27日|提问者:万元Bella)",
