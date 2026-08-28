@@ -356,7 +356,7 @@ body::before {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1rem;
-  height: 200px;
+  height: 240px;
   overflow-y: auto;
   margin-bottom: 12px;
   font-size: 0.85rem;
@@ -378,7 +378,7 @@ body::before {
 .ai-msg.bot {
   background: var(--accent-glow);
   border: 1px solid rgba(160, 120, 24, 0.12);
-  margin-right: 2rem;
+  margin-right: 1rem;
 }
 
 .ai-msg .source {
@@ -390,6 +390,46 @@ body::before {
 }
 
 .ai-msg .source:hover { color: var(--accent); text-decoration: underline; }
+
+.ai-msg .source-block {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(160, 120, 24, 0.15);
+}
+
+.ai-msg .source-item {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--accent-dim);
+  cursor: pointer;
+  padding: 2px 0;
+  transition: color 0.2s;
+}
+
+.ai-msg .source-item:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.ai-thinking {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+}
+
+.ai-thinking .dot {
+  width: 4px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 1.2s infinite;
+}
+
+.ai-thinking .dot:nth-child(2) { animation-delay: 0.2s; }
+.ai-thinking .dot:nth-child(3) { animation-delay: 0.4s; }
 
 .ai-input-row {
   display: flex;
@@ -766,7 +806,7 @@ body::before {
       <div class="ai-badge">BETA</div>
       <h2 class="ai-title">智能问答助手</h2>
       <p class="ai-desc">
-        有疑问？直接提问，AI 基于知识库原文为你解答。<br>
+        有疑问？直接提问，助手会从知识库中检索相关内容并组织回答。<br>
         每个回答都会标注来源条目，方便溯源验证。
       </p>
     </div>
@@ -812,6 +852,9 @@ body::before {
 <script src="QA_DATA.js"></script>
 
 <script>
+// ============================================================
+//  DOM 引用
+// ============================================================
 const qaList = document.getElementById('qaList');
 const searchInput = document.getElementById('searchInput');
 const searchClear = document.getElementById('searchClear');
@@ -827,10 +870,13 @@ let activeTag = 'all';
 let searchQuery = '';
 let isAllExpanded = true;
 
+// ============================================================
+//  初始化
+// ============================================================
 function initApp() {
   if (typeof QA_DATA === 'undefined' || !Array.isArray(QA_DATA) || QA_DATA.length === 0) {
     emptyState.style.display = 'block';
-    emptyState.innerHTML = '<div class="icon">⚠️</div><p style="color:var(--accent);">未检测到问答数据，请确保同级目录下存在 QA_DATA.js 且已成功定义 const QA_DATA。</p>';
+    emptyState.innerHTML = '<div class="icon">⚠️</div><p style="color:var(--accent);">未检测到问答数据，请确保同级目录下存在 QA_DATA.js。</p>';
     return;
   }
 
@@ -851,27 +897,21 @@ function initApp() {
   renderList();
 }
 
+// ============================================================
+//  列表渲染
+// ============================================================
 function renderList() {
   if (typeof QA_DATA === 'undefined') return;
 
   const filtered = QA_DATA.filter(item => {
     const matchTag = activeTag === 'all' || (item.tags && item.tags.includes(activeTag));
-
     if (!searchQuery) return matchTag;
-
     const q = (item.q || '').toLowerCase();
-    const rawA = (item.a || '');
-    const plainA = rawA.replace(/<[^>]*>/g, '').toLowerCase();
+    const plainA = (item.a || '').replace(/<[^>]*>/g, '').toLowerCase();
     const tags = (item.tags || []).map(t => t.toLowerCase());
     const idStr = String(item.id);
-
-    const matchSearch =
-      q.includes(searchQuery) ||
-      plainA.includes(searchQuery) ||
-      tags.some(t => t.includes(searchQuery)) ||
-      idStr === searchQuery ||
-      idStr.padStart(2, '0') === searchQuery;
-
+    const matchSearch = q.includes(searchQuery) || plainA.includes(searchQuery) ||
+      tags.some(t => t.includes(searchQuery)) || idStr === searchQuery || idStr.padStart(2, '0') === searchQuery;
     return matchTag && matchSearch;
   });
 
@@ -884,7 +924,6 @@ function renderList() {
   }
 
   emptyState.style.display = 'none';
-
   qaList.innerHTML = filtered.map(item => {
     const tagsHtml = (item.tags || []).map(t => `<span class="qa-tag">${t}</span>`).join('');
     const linksHtml = item.links && item.links.length > 0 ? `
@@ -894,9 +933,7 @@ function renderList() {
           const linked = QA_DATA.find(q => q.id === l);
           return linked ? `<a class="qa-cross-link" onclick="event.stopPropagation();scrollToQA(${l})">#${String(l).padStart(2,'0')} ${linked.q.slice(0,14)}…</a>` : '';
         }).join('')}
-      </div>
-    ` : '';
-
+      </div>` : '';
     return `
       <div class="qa-item open" data-id="${item.id}">
         <div class="qa-question" onclick="toggleQA(this.parentElement)">
@@ -911,8 +948,7 @@ function renderList() {
             ${linksHtml}
           </div>
         </div>
-      </div>
-    `;
+      </div>`;
   }).join('');
 }
 
@@ -920,24 +956,16 @@ function highlightText(text) {
   if (!text) return '';
   if (!searchQuery) return text;
   const escaped = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const regex = new RegExp(`(${escaped})`, 'gi');
-  return text.replace(regex, '<mark style="background:rgba(160,120,24,0.18);color:var(--text);padding:1px 3px;border-radius:3px;border-bottom:2px solid var(--accent);">$1</mark>');
+  return text.replace(new RegExp(`(${escaped})`, 'gi'),
+    '<mark style="background:rgba(160,120,24,0.18);color:var(--text);padding:1px 3px;border-radius:3px;border-bottom:2px solid var(--accent);">$1</mark>');
 }
 
-function toggleQA(el) {
-  el.classList.toggle('open');
-}
+function toggleQA(el) { el.classList.toggle('open'); }
 
 function toggleAllCards() {
   const items = document.querySelectorAll('.qa-item');
   isAllExpanded = !isAllExpanded;
-  items.forEach(item => {
-    if (isAllExpanded) {
-      item.classList.add('open');
-    } else {
-      item.classList.remove('open');
-    }
-  });
+  items.forEach(item => isAllExpanded ? item.classList.add('open') : item.classList.remove('open'));
   toggleAllBtn.textContent = isAllExpanded ? '折叠全部' : '展开全部';
 }
 
@@ -959,7 +987,9 @@ function clearSearch() {
   renderList();
 }
 
-// 标签筛选
+// ============================================================
+//  事件监听
+// ============================================================
 filtersContainer.addEventListener('click', e => {
   if (!e.target.classList.contains('filter-btn')) return;
   filtersContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -968,89 +998,160 @@ filtersContainer.addEventListener('click', e => {
   renderList();
 });
 
-// 搜索：实时触发
 let searchTimer;
 searchInput.addEventListener('input', () => {
   const val = searchInput.value;
-
-  // 显示/隐藏清除按钮
-  if (val.length > 0) {
-    searchClear.classList.add('visible');
-  } else {
-    searchClear.classList.remove('visible');
-  }
-
+  val.length > 0 ? searchClear.classList.add('visible') : searchClear.classList.remove('visible');
   clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => {
-    searchQuery = val.trim().toLowerCase();
-    renderList();
-  }, 120);
+  searchTimer = setTimeout(() => { searchQuery = val.trim().toLowerCase(); renderList(); }, 120);
 });
-
-// 清除按钮
 searchClear.addEventListener('click', clearSearch);
 
-// 快捷键
 document.addEventListener('keydown', e => {
   if (e.key === '/' && document.activeElement !== searchInput && document.activeElement !== aiInput) {
-    e.preventDefault();
-    searchInput.focus();
+    e.preventDefault(); searchInput.focus();
   }
-  if (e.key === 'Escape') {
-    clearSearch();
-  }
+  if (e.key === 'Escape') clearSearch();
 });
 
-// AI 对话
+// ============================================================
+//  智能问答：增强本地匹配
+// ============================================================
+
+// 去除 HTML 标签
+function stripHtml(html) {
+  return (html || '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+// 中文分词（按标点空格切分 + bigram）
+function tokenize(text) {
+  const cleaned = text.toLowerCase().replace(/[^\u4e00-\u9fff\w]+/g, ' ').trim();
+  const words = cleaned.split(/\s+/).filter(w => w.length > 0);
+  const bigrams = [];
+  const chars = text.toLowerCase().replace(/[^\u4e00-\u9fff]/g, '');
+  for (let i = 0; i < chars.length - 1; i++) {
+    bigrams.push(chars.slice(i, i + 2));
+  }
+  return [...new Set([...words, ...bigrams])];
+}
+
+// Jaccard 相似度
+function jaccardSimilarity(tokensA, tokensB) {
+  const setA = new Set(tokensA);
+  const setB = new Set(tokensB);
+  const intersection = [...setA].filter(x => setB.has(x));
+  const union = new Set([...setA, ...setB]);
+  return union.size === 0 ? 0 : intersection.length / union.size;
+}
+
+// 从答案中提取与问题最相关的句子
+function extractRelevantSentences(query, answerHtml, maxSentences) {
+  const plain = stripHtml(answerHtml);
+  const sentences = plain.split(/[。！？；\n]+/).map(s => s.trim()).filter(s => s.length > 8);
+  if (sentences.length === 0) return [plain.slice(0, 200)];
+
+  const queryTokens = tokenize(query);
+  const scored = sentences.map(s => ({
+    text: s,
+    score: jaccardSimilarity(queryTokens, tokenize(s))
+  })).sort((a, b) => b.score - a.score);
+
+  const topTexts = new Set(scored.slice(0, maxSentences).map(s => s.text));
+  return sentences.filter(s => topTexts.has(s)).slice(0, maxSentences);
+}
+
+// 增强本地检索
+function localSearch(query, topN) {
+  const queryTokens = tokenize(query);
+  const queryLower = query.toLowerCase();
+
+  return QA_DATA.map(item => {
+    const qTokens = tokenize(item.q || '');
+    const aPlain = stripHtml(item.a || '');
+    const aTokens = tokenize(aPlain);
+    const tagStr = (item.tags || []).join(' ').toLowerCase();
+
+    const qSim = jaccardSimilarity(queryTokens, qTokens);
+    const aSim = jaccardSimilarity(queryTokens, aTokens);
+
+    let directHit = 0;
+    if ((item.q || '').toLowerCase().includes(queryLower)) directHit += 3;
+    if (aPlain.toLowerCase().includes(queryLower)) directHit += 1;
+    if (tagStr.includes(queryLower)) directHit += 1;
+
+    return { ...item, score: qSim * 5 + aSim * 2 + directHit };
+  }).filter(item => item.score > 0.05)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, topN || 3);
+}
+
+// 从检索结果构建回答
+function buildAnswer(query, results) {
+  if (results.length === 0) return null;
+
+  let html = '';
+  let sources = [];
+
+  results.forEach((item, i) => {
+    const relevant = extractRelevantSentences(query, item.a, 3);
+    if (relevant.length > 0) {
+      const label = results.length > 1 ? `<strong>[${i + 1}]</strong> ` : '';
+      html += `<p>${label}${relevant.join('。')}。</p>`;
+    }
+    sources.push({ id: item.id, q: item.q });
+  });
+
+  html += `<div class="source-block">`;
+  html += `<span style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);">📎 引用来源：</span><br>`;
+  sources.forEach(s => {
+    html += `<span class="source-item" onclick="scrollToQA(${s.id})">#${String(s.id).padStart(2, '0')} ${s.q.slice(0, 30)}${s.q.length > 30 ? '…' : ''}</span>`;
+  });
+  html += `</div>`;
+
+  return html;
+}
+
+// 主发送函数
 function sendAIMessage() {
   const question = aiInput.value.trim();
   if (!question || typeof QA_DATA === 'undefined') return;
 
+  // 用户消息
   const userDiv = document.createElement('div');
   userDiv.className = 'ai-msg user';
   userDiv.textContent = question;
   aiMessages.appendChild(userDiv);
 
-  const keywords = question.toLowerCase().split(/[\s,，。？！?!.]+/).filter(k => k.length > 1);
-  const scored = QA_DATA.map(item => {
-    let score = 0;
-    const plainA = (item.a || '').replace(/<[^>]*>/g, '');
-    const text = ((item.q || '') + ' ' + plainA + ' ' + (item.tags || []).join(' ')).toLowerCase();
-    keywords.forEach(kw => {
-      if (text.includes(kw)) score += 1;
-      if (item.q && item.q.toLowerCase().includes(kw)) score += 2;
-    });
-    return { ...item, score };
-  }).filter(item => item.score > 0).sort((a, b) => b.score - a.score).slice(0, 3);
-
-  const botDiv = document.createElement('div');
-  botDiv.className = 'ai-msg bot';
-
-  if (scored.length > 0) {
-    let html = `<div style="margin-bottom:8px;">根据知识库，找到 ${scored.length} 个相关条目：</div>`;
-    scored.forEach((item, i) => {
-      const plainA = (item.a || '').replace(/<[^>]*>/g, '');
-      html += `<div style="margin-bottom:10px;">`;
-      html += `<strong>${i + 1}.</strong> ${plainA.slice(0, 100)}…<br>`;
-      html += `<span class="source" onclick="scrollToQA(${item.id})">📎 来源: #${String(item.id).padStart(2, '0')}「${(item.q || '').slice(0, 25)}」</span>`;
-      html += `</div>`;
-    });
-    botDiv.innerHTML = html;
-  } else {
-    botDiv.innerHTML = '抱歉，知识库中暂未找到与该问题直接相关的内容。<br>试试换个关键词提问？';
-  }
-
-  aiMessages.appendChild(botDiv);
+  // 思考中
+  const thinkingDiv = document.createElement('div');
+  thinkingDiv.className = 'ai-msg bot';
+  thinkingDiv.innerHTML = '<span class="ai-thinking"><span class="dot"></span><span class="dot"></span><span class="dot"></span> 正在分析知识库</span>';
+  aiMessages.appendChild(thinkingDiv);
   aiMessages.scrollTop = aiMessages.scrollHeight;
+
   aiInput.value = '';
+
+  // 延迟 300ms 模拟思考，让动画可见
+  setTimeout(() => {
+    const results = localSearch(question, 5);
+    const answerHtml = buildAnswer(question, results);
+
+    if (answerHtml) {
+      thinkingDiv.innerHTML = answerHtml;
+    } else {
+      thinkingDiv.innerHTML = '抱歉，知识库中暂未找到与该问题相关的内容。<br>试试换个关键词提问？';
+    }
+
+    aiMessages.scrollTop = aiMessages.scrollHeight;
+  }, 300);
 }
 
 aiSend.addEventListener('click', sendAIMessage);
-aiInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') sendAIMessage();
-});
+aiInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendAIMessage(); });
 
-// 初始化
+// ============================================================
+//  初始化
+// ============================================================
 window.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
