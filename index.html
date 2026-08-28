@@ -8,19 +8,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0c0b09;
-  --surface: #161412;
-  --surface-2: #1e1b18;
-  --surface-3: #282420;
-  --accent: #d4a843;
-  --accent-dim: #a07e2e;
-  --accent-glow: rgba(212, 168, 67, 0.12);
-  --text: #e8e2d6;
-  --text-muted: #8a8278;
-  --text-dim: #5a554e;
-  --border: #2a2622;
-  --tag-bg: #1e1b16;
-  --tag-text: #b8a878;
+  --bg: #f8f4ec;
+  --surface: #ffffff;
+  --surface-2: #f0ebe1;
+  --surface-3: #e8e2d6;
+  --accent: #a07818;
+  --accent-dim: #846410;
+  --accent-glow: rgba(160, 120, 24, 0.08);
+  --text: #2a2118;
+  --text-muted: #6b6054;
+  --text-dim: #9e9588;
+  --border: #ddd6c8;
+  --tag-bg: #f0ead9;
+  --tag-text: #7a6a3a;
   --serif: 'Noto Serif SC', 'Songti SC', serif;
   --mono: 'JetBrains Mono', 'Menlo', monospace;
 }
@@ -43,14 +43,14 @@ body::before {
   position: fixed;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-  opacity: 0.03;
+  opacity: 0.02;
   pointer-events: none;
   z-index: 9999;
 }
 
 ::selection {
   background: var(--accent);
-  color: var(--bg);
+  color: #fff;
 }
 
 ::-webkit-scrollbar { width: 6px; }
@@ -63,7 +63,7 @@ body::before {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(12, 11, 9, 0.85);
+  background: rgba(248, 244, 236, 0.9);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
   padding: 0 2rem;
@@ -96,7 +96,7 @@ body::before {
   justify-content: center;
   font-weight: 900;
   font-size: 18px;
-  color: var(--bg);
+  color: #fff;
   font-family: var(--mono);
 }
 
@@ -131,13 +131,13 @@ body::before {
 }
 
 .nav-links a:hover { color: var(--accent); }
-.nav-links a.active { color: var(--accent); }
+.nav-links a.active { color: var(--accent); font-weight: 700; }
 
 /* ===== HERO ===== */
 .hero {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 5rem 2rem 2.5rem;
+  padding: 4rem 2rem 2.5rem;
   text-align: center;
   position: relative;
 }
@@ -145,12 +145,12 @@ body::before {
 .hero::before {
   content: '';
   position: absolute;
-  top: -100px;
+  top: -60px;
   left: 50%;
   transform: translateX(-50%);
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(160, 120, 24, 0.06) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -158,7 +158,7 @@ body::before {
   display: flex;
   justify-content: center;
   gap: 3rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
   animation: fadeUp 0.8s ease forwards;
 }
 
@@ -205,7 +205,7 @@ body::before {
 
 .search-box {
   width: 100%;
-  padding: 16px 20px 16px 52px;
+  padding: 16px 52px 16px 52px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -214,13 +214,14 @@ body::before {
   font-size: 1rem;
   outline: none;
   transition: border-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .search-box::placeholder { color: var(--text-dim); }
 
 .search-box:focus {
-  border-color: var(--accent-dim);
-  box-shadow: 0 0 0 3px var(--accent-glow);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.06);
 }
 
 .search-icon {
@@ -233,6 +234,29 @@ body::before {
   pointer-events: none;
 }
 
+.search-clear {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface-3);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  line-height: 1;
+}
+
+.search-clear:hover { background: var(--border); color: var(--text); }
+.search-clear.visible { display: flex; }
+
 .search-hint {
   text-align: center;
   margin-top: 12px;
@@ -242,12 +266,13 @@ body::before {
 }
 
 .search-hint kbd {
-  background: var(--surface-2);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 1px 6px;
   font-family: var(--mono);
   font-size: 0.7rem;
+  box-shadow: 0 1px 0 var(--border);
 }
 
 /* ===== AI CHAT ===== */
@@ -258,7 +283,7 @@ body::before {
 }
 
 .ai-card {
-  background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 2.5rem;
@@ -269,6 +294,7 @@ body::before {
   overflow: hidden;
   animation: fadeUp 0.8s ease 0.45s forwards;
   opacity: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .ai-card::before {
@@ -278,7 +304,7 @@ body::before {
   right: -20%;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(212, 168, 67, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(160, 120, 24, 0.04) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -288,8 +314,8 @@ body::before {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(212, 168, 67, 0.1);
-  border: 1px solid rgba(212, 168, 67, 0.2);
+  background: rgba(160, 120, 24, 0.08);
+  border: 1px solid rgba(160, 120, 24, 0.2);
   color: var(--accent);
   font-family: var(--mono);
   font-size: 0.7rem;
@@ -351,7 +377,7 @@ body::before {
 
 .ai-msg.bot {
   background: var(--accent-glow);
-  border: 1px solid rgba(212, 168, 67, 0.1);
+  border: 1px solid rgba(160, 120, 24, 0.12);
   margin-right: 2rem;
 }
 
@@ -363,7 +389,7 @@ body::before {
   cursor: pointer;
 }
 
-.ai-msg .source:hover { color: var(--accent); }
+.ai-msg .source:hover { color: var(--accent); text-decoration: underline; }
 
 .ai-input-row {
   display: flex;
@@ -373,7 +399,7 @@ body::before {
 .ai-input {
   flex: 1;
   padding: 10px 14px;
-  background: var(--bg);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text);
@@ -383,12 +409,12 @@ body::before {
   transition: border-color 0.2s;
 }
 
-.ai-input:focus { border-color: var(--accent-dim); }
+.ai-input:focus { border-color: var(--accent); }
 
 .ai-send {
   padding: 10px 20px;
   background: var(--accent);
-  color: var(--bg);
+  color: #fff;
   border: none;
   border-radius: 8px;
   font-family: var(--serif);
@@ -398,7 +424,7 @@ body::before {
   transition: background 0.2s, transform 0.1s;
 }
 
-.ai-send:hover { background: #e0b64e; }
+.ai-send:hover { background: #846410; }
 .ai-send:active { transform: scale(0.97); }
 
 /* ===== FILTERS & CONTROLS ===== */
@@ -435,14 +461,14 @@ body::before {
 }
 
 .filter-btn:hover {
-  border-color: var(--accent-dim);
+  border-color: var(--accent);
   color: var(--text);
 }
 
 .filter-btn.active {
   background: var(--accent);
   border-color: var(--accent);
-  color: var(--bg);
+  color: #fff;
   font-weight: 700;
 }
 
@@ -467,7 +493,7 @@ body::before {
 
 .toggle-all-btn:hover {
   background: var(--surface-3);
-  border-color: var(--accent-dim);
+  border-color: var(--accent);
 }
 
 .filter-count {
@@ -482,7 +508,7 @@ body::before {
   margin: 0 auto;
   padding: 0 2rem 4rem;
   display: grid;
-  gap: 16px;
+  gap: 14px;
 }
 
 .qa-item {
@@ -492,15 +518,17 @@ body::before {
   overflow: hidden;
   transition: border-color 0.3s, box-shadow 0.3s;
   cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .qa-item:hover {
-  border-color: var(--accent-dim);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  border-color: rgba(160, 120, 24, 0.35);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
 }
 
 .qa-item.open {
-  border-color: rgba(212, 168, 67, 0.4);
+  border-color: rgba(160, 120, 24, 0.4);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
 }
 
 .qa-question {
@@ -516,7 +544,7 @@ body::before {
   font-size: 0.75rem;
   color: var(--accent);
   background: var(--accent-glow);
-  border: 1px solid rgba(212, 168, 67, 0.2);
+  border: 1px solid rgba(160, 120, 24, 0.2);
   padding: 3px 10px;
   border-radius: 4px;
   white-space: nowrap;
@@ -545,7 +573,7 @@ body::before {
   font-size: 0.65rem;
   color: var(--tag-text);
   background: var(--tag-bg);
-  border: 1px solid rgba(184, 168, 120, 0.15);
+  border: 1px solid rgba(122, 106, 58, 0.15);
   padding: 2px 8px;
   border-radius: 4px;
   letter-spacing: 0.04em;
@@ -582,10 +610,10 @@ body::before {
 }
 
 .qa-answer-text {
-  color: #c9c3b8;
+  color: #4a4238;
   font-size: 0.95rem;
   line-height: 1.9;
-  border-left: 2px solid var(--accent-dim);
+  border-left: 2px solid var(--accent);
   padding-left: 1.2rem;
 }
 
@@ -619,7 +647,7 @@ body::before {
   font-size: 0.7rem;
   color: var(--accent-dim);
   background: var(--accent-glow);
-  border: 1px solid rgba(212, 168, 67, 0.15);
+  border: 1px solid rgba(160, 120, 24, 0.15);
   padding: 4px 10px;
   border-radius: 4px;
   cursor: pointer;
@@ -628,9 +656,9 @@ body::before {
 }
 
 .qa-cross-link:hover {
-  color: var(--accent);
+  color: #fff;
   border-color: var(--accent);
-  background: rgba(212, 168, 67, 0.2);
+  background: var(--accent);
 }
 
 /* ===== EMPTY STATE ===== */
@@ -643,7 +671,7 @@ body::before {
 .empty-state .icon {
   font-size: 3rem;
   margin-bottom: 1rem;
-  opacity: 0.3;
+  opacity: 0.4;
 }
 
 .empty-state p {
@@ -726,6 +754,7 @@ body::before {
   <div class="search-container">
     <span class="search-icon">⌕</span>
     <input type="text" class="search-box" id="searchInput" placeholder="搜索问题、关键词、标签……" autocomplete="off">
+    <button class="search-clear" id="searchClear" title="清除搜索">✕</button>
     <div class="search-hint">按 <kbd>/</kbd> 聚焦搜索 · 按 <kbd>Esc</kbd> 清除</div>
   </div>
 </section>
@@ -785,6 +814,7 @@ body::before {
 <script>
 const qaList = document.getElementById('qaList');
 const searchInput = document.getElementById('searchInput');
+const searchClear = document.getElementById('searchClear');
 const filtersContainer = document.getElementById('filters');
 const filterCount = document.getElementById('filterCount');
 const emptyState = document.getElementById('emptyState');
@@ -800,17 +830,15 @@ let isAllExpanded = true;
 function initApp() {
   if (typeof QA_DATA === 'undefined' || !Array.isArray(QA_DATA) || QA_DATA.length === 0) {
     emptyState.style.display = 'block';
-    emptyState.innerHTML = '<div class="icon">⚠️</div><p style="color:#d4a843;">未检测到问答数据，请确保同级目录下存在 QA_DATA.js 且已成功定义 const QA_DATA。</p>';
+    emptyState.innerHTML = '<div class="icon">⚠️</div><p style="color:var(--accent);">未检测到问答数据，请确保同级目录下存在 QA_DATA.js 且已成功定义 const QA_DATA。</p>';
     return;
   }
 
-  // 渲染统计
   document.getElementById('totalCount').textContent = QA_DATA.length;
   const allTags = [...new Set(QA_DATA.flatMap(q => q.tags || []))].sort();
   document.getElementById('tagCount').textContent = allTags.length;
   document.getElementById('linkCount').textContent = QA_DATA.reduce((sum, q) => sum + (q.links ? q.links.length : 0), 0);
 
-  // 渲染标签按钮
   const controlsDiv = document.querySelector('.filter-controls');
   allTags.forEach(tag => {
     const btn = document.createElement('button');
@@ -826,17 +854,26 @@ function initApp() {
 function renderList() {
   if (typeof QA_DATA === 'undefined') return;
 
-  // 直接使用原始数组进行过滤，即为正序（1 -> 99）
   const filtered = QA_DATA.filter(item => {
     const matchTag = activeTag === 'all' || (item.tags && item.tags.includes(activeTag));
-    const matchSearch = !searchQuery ||
-      (item.q && item.q.toLowerCase().includes(searchQuery)) ||
-      (item.a && item.a.toLowerCase().includes(searchQuery)) ||
-      (item.tags && item.tags.some(t => t.toLowerCase().includes(searchQuery)));
+
+    if (!searchQuery) return matchTag;
+
+    const q = (item.q || '').toLowerCase();
+    const rawA = (item.a || '');
+    const plainA = rawA.replace(/<[^>]*>/g, '').toLowerCase();
+    const tags = (item.tags || []).map(t => t.toLowerCase());
+    const idStr = String(item.id);
+
+    const matchSearch =
+      q.includes(searchQuery) ||
+      plainA.includes(searchQuery) ||
+      tags.some(t => t.includes(searchQuery)) ||
+      idStr === searchQuery ||
+      idStr.padStart(2, '0') === searchQuery;
+
     return matchTag && matchSearch;
   });
-
-  // 后续逻辑保持不变...
 
   filterCount.textContent = `显示 ${filtered.length} / ${QA_DATA.length}`;
 
@@ -847,39 +884,44 @@ function renderList() {
   }
 
   emptyState.style.display = 'none';
-  qaList.innerHTML = filtered.map(item => `
-    <div class="qa-item open" data-id="${item.id}">
-      <div class="qa-question" onclick="toggleQA(this.parentElement)">
-        <span class="qa-number">#${String(item.id).padStart(2, '0')}</span>
-        <span class="qa-q-text">${highlightText(item.q)}</span>
-        <div class="qa-tags">
-          ${(item.tags || []).map(t => `<span class="qa-tag">${t}</span>`).join('')}
-        </div>
-        <span class="qa-toggle">+</span>
+
+  qaList.innerHTML = filtered.map(item => {
+    const tagsHtml = (item.tags || []).map(t => `<span class="qa-tag">${t}</span>`).join('');
+    const linksHtml = item.links && item.links.length > 0 ? `
+      <div class="qa-cross-links">
+        <span style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);margin-right:4px;">关联条目 →</span>
+        ${item.links.map(l => {
+          const linked = QA_DATA.find(q => q.id === l);
+          return linked ? `<a class="qa-cross-link" onclick="event.stopPropagation();scrollToQA(${l})">#${String(l).padStart(2,'0')} ${linked.q.slice(0,14)}…</a>` : '';
+        }).join('')}
       </div>
-      <div class="qa-answer">
-        <div class="qa-answer-inner">
-          <div class="qa-answer-text">${highlightText(item.a)}</div>
-          ${item.links && item.links.length > 0 ? `
-            <div class="qa-cross-links">
-              <span style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);margin-right:4px;">关联条目 →</span>
-              ${item.links.map(l => {
-                const linked = QA_DATA.find(q => q.id === l);
-                return linked ? `<a class="qa-cross-link" onclick="scrollToQA(${l})">#${String(l).padStart(2,'0')} ${linked.q.slice(0,14)}…</a>` : '';
-              }).join('')}
-            </div>
-          ` : ''}
+    ` : '';
+
+    return `
+      <div class="qa-item open" data-id="${item.id}">
+        <div class="qa-question" onclick="toggleQA(this.parentElement)">
+          <span class="qa-number">#${String(item.id).padStart(2, '0')}</span>
+          <span class="qa-q-text">${highlightText(item.q || '')}</span>
+          <div class="qa-tags">${tagsHtml}</div>
+          <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer">
+          <div class="qa-answer-inner">
+            <div class="qa-answer-text">${highlightText(item.a || '')}</div>
+            ${linksHtml}
+          </div>
         </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function highlightText(text) {
   if (!text) return '';
   if (!searchQuery) return text;
-  const regex = new RegExp(`(${searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-  return text.replace(regex, '<mark style="background:var(--accent);color:var(--bg);padding:0 2px;border-radius:2px;">$1</mark>');
+  const escaped = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(`(${escaped})`, 'gi');
+  return text.replace(regex, '<mark style="background:rgba(160,120,24,0.18);color:var(--text);padding:1px 3px;border-radius:3px;border-bottom:2px solid var(--accent);">$1</mark>');
 }
 
 function toggleQA(el) {
@@ -909,6 +951,14 @@ function scrollToQA(id) {
   }
 }
 
+function clearSearch() {
+  searchInput.value = '';
+  searchQuery = '';
+  searchClear.classList.remove('visible');
+  searchInput.focus();
+  renderList();
+}
+
 // 标签筛选
 filtersContainer.addEventListener('click', e => {
   if (!e.target.classList.contains('filter-btn')) return;
@@ -918,15 +968,27 @@ filtersContainer.addEventListener('click', e => {
   renderList();
 });
 
-// 搜索防抖
+// 搜索：实时触发
 let searchTimer;
 searchInput.addEventListener('input', () => {
+  const val = searchInput.value;
+
+  // 显示/隐藏清除按钮
+  if (val.length > 0) {
+    searchClear.classList.add('visible');
+  } else {
+    searchClear.classList.remove('visible');
+  }
+
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => {
-    searchQuery = searchInput.value.trim().toLowerCase();
+    searchQuery = val.trim().toLowerCase();
     renderList();
-  }, 200);
+  }, 120);
 });
+
+// 清除按钮
+searchClear.addEventListener('click', clearSearch);
 
 // 快捷键
 document.addEventListener('keydown', e => {
@@ -935,10 +997,7 @@ document.addEventListener('keydown', e => {
     searchInput.focus();
   }
   if (e.key === 'Escape') {
-    searchInput.value = '';
-    searchQuery = '';
-    searchInput.blur();
-    renderList();
+    clearSearch();
   }
 });
 
@@ -955,7 +1014,8 @@ function sendAIMessage() {
   const keywords = question.toLowerCase().split(/[\s,，。？！?!.]+/).filter(k => k.length > 1);
   const scored = QA_DATA.map(item => {
     let score = 0;
-    const text = (item.q + ' ' + item.a + ' ' + (item.tags || []).join(' ')).toLowerCase();
+    const plainA = (item.a || '').replace(/<[^>]*>/g, '');
+    const text = ((item.q || '') + ' ' + plainA + ' ' + (item.tags || []).join(' ')).toLowerCase();
     keywords.forEach(kw => {
       if (text.includes(kw)) score += 1;
       if (item.q && item.q.toLowerCase().includes(kw)) score += 2;
@@ -972,7 +1032,7 @@ function sendAIMessage() {
       const plainA = (item.a || '').replace(/<[^>]*>/g, '');
       html += `<div style="margin-bottom:10px;">`;
       html += `<strong>${i + 1}.</strong> ${plainA.slice(0, 100)}…<br>`;
-      html += `<span class="source" onclick="scrollToQA(${item.id})">📎 来源: #${String(item.id).padStart(2, '0')}「${item.q.slice(0, 25)}」</span>`;
+      html += `<span class="source" onclick="scrollToQA(${item.id})">📎 来源: #${String(item.id).padStart(2, '0')}「${(item.q || '').slice(0, 25)}」</span>`;
       html += `</div>`;
     });
     botDiv.innerHTML = html;
@@ -990,7 +1050,7 @@ aiInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') sendAIMessage();
 });
 
-// 页面加载完成后自动初始化
+// 初始化
 window.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
