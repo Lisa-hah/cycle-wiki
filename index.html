@@ -826,10 +826,8 @@ function initApp() {
 function renderList() {
   if (typeof QA_DATA === 'undefined') return;
 
-  // 核心改动：使用 slice().reverse() 保证首页按倒序呈现
-  const reversedData = QA_DATA.slice().reverse();
-
-  const filtered = reversedData.filter(item => {
+  // 直接使用原始数组进行过滤，即为正序（1 -> 99）
+  const filtered = QA_DATA.filter(item => {
     const matchTag = activeTag === 'all' || (item.tags && item.tags.includes(activeTag));
     const matchSearch = !searchQuery ||
       (item.q && item.q.toLowerCase().includes(searchQuery)) ||
@@ -837,6 +835,8 @@ function renderList() {
       (item.tags && item.tags.some(t => t.toLowerCase().includes(searchQuery)));
     return matchTag && matchSearch;
   });
+
+  // 后续逻辑保持不变...
 
   filterCount.textContent = `显示 ${filtered.length} / ${QA_DATA.length}`;
 
