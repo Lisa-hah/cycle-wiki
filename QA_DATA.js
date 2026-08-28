@@ -1,24 +1,5 @@
-/**
- * 拙大叔宏观周期问答全集（全部 98 篇完整原文数据）
- * 包含 1-98 个问答的完整原文、标题、日期、提问者及分类检索辅助函数。
- * 兼容格式：直接数组访问 (QA_DATA[0], QA_DATA.length), 对象方法 (QA_DATA.getAll()), 以及 CommonJS / ES Module / 全局变量
- */
-
-(function (root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    define([], factory);
-  } else if (typeof module === 'object' && module.exports) {
-    module.exports = factory();
-  } else {
-    var result = factory();
-    root.QA_DATA = result;
-    if (typeof window !== 'undefined') {
-      window.QA_DATA = result;
-    }
-  }
-}(typeof self !== 'undefined' ? self : this, function () {
-
-  var qaList = [
+// 拙大叔宏观周期问答全集（全部 98 篇完整原文数据）
+var QA_DATA = [
   {
     "id": 1,
     "title": "1. 为什么第一幕不建议买短期美债?美股、美债与美元的“三位一体”危机梯次演进全景(2026年8月27日|提问者:万元Bella)",
@@ -707,52 +688,13 @@
   }
 ];
 
-  // 挂载辅助方法与属性，确保无论 HTML 将 QA_DATA 视为数组还是对象均能 100% 兼容
-  qaList.data = qaList;
-  qaList.getAll = function() {
-    return qaList;
-  };
-  qaList.getById = function(id) {
-    return qaList.find(function(item) { return item.id === Number(id); }) || null;
-  };
-  qaList.search = function(keyword) {
-    if (!keyword) return [];
-    var kw = keyword.toLowerCase();
-    return qaList.filter(function(item) {
-      return (item.title && item.title.toLowerCase().includes(kw)) ||
-             (item.content && item.content.toLowerCase().includes(kw)) ||
-             (item.asker && item.asker.toLowerCase().includes(kw));
-    });
-  };
-  qaList.getByAsker = function(askerName) {
-    if (!askerName) return [];
-    return qaList.filter(function(item) {
-      return item.asker && item.asker.includes(askerName);
-    });
-  };
-  qaList.getAllAskers = function() {
-    var askers = [];
-    qaList.forEach(function(item) {
-      if (item.asker && askers.indexOf(item.asker) === -1) {
-        askers.push(item.asker);
-      }
-    });
-    return askers;
-  };
-  qaList.getStats = function() {
-    var totalChars = 0;
-    for (var i = 0; i < qaList.length; i++) {
-      totalChars += (qaList[i].content ? qaList[i].content.length : 0);
-    }
-    return {
-      totalCount: qaList.length,
-      totalChars: totalChars,
-      dateRange: {
-        earliest: qaList[qaList.length - 1].date,
-        latest: qaList[0].date
-      }
-    };
-  };
-
-  return qaList;
-}));
+// 挂载到全局 window / global / self
+if (typeof window !== 'undefined') {
+    window.QA_DATA = QA_DATA;
+}
+if (typeof globalThis !== 'undefined') {
+    globalThis.QA_DATA = QA_DATA;
+}
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = QA_DATA;
+}
