@@ -1,7 +1,7 @@
 /**
  * 拙大叔宏观周期问答全集（全部 98 篇完整原文数据）
  * 包含 1-98 个问答的完整原文、标题、日期、提问者及分类检索辅助函数。
- * 格式兼容 ES Module, CommonJS 以及浏览器全局变量 (window.QA_DATA)
+ * 兼容格式：直接数组访问 (QA_DATA[0], QA_DATA.length), 对象方法 (QA_DATA.getAll()), 以及 CommonJS / ES Module / 全局变量
  */
 
 (function (root, factory) {
@@ -10,11 +10,15 @@
   } else if (typeof module === 'object' && module.exports) {
     module.exports = factory();
   } else {
-    root.QA_DATA = factory();
+    var result = factory();
+    root.QA_DATA = result;
+    if (typeof window !== 'undefined') {
+      window.QA_DATA = result;
+    }
   }
 }(typeof self !== 'undefined' ? self : this, function () {
 
-  const qaList = [
+  var qaList = [
   {
     "id": 1,
     "title": "1. 为什么第一幕不建议买短期美债?美股、美债与美元的“三位一体”危机梯次演进全景(2026年8月27日|提问者:万元Bella)",
@@ -703,54 +707,52 @@
   }
 ];
 
-  // 辅助检索与工具方法
-  const helper = {
-    // 获取全部98个问答
-    getAll() {
-      return qaList;
-    },
-    // 根据编号获取单个问答 (1-98)
-    getById(id) {
-      return qaList.find(item => item.id === Number(id)) || null;
-    },
-    // 根据关键词在标题和正文中搜索
-    search(keyword) {
-      if (!keyword) return [];
-      const kw = keyword.toLowerCase();
-      return qaList.filter(item => 
-        item.title.toLowerCase().includes(kw) || 
-        item.content.toLowerCase().includes(kw) ||
-        (item.asker && item.asker.toLowerCase().includes(kw))
-      );
-    },
-    // 根据提问者过滤
-    getByAsker(askerName) {
-      if (!askerName) return [];
-      return qaList.filter(item => item.asker && item.asker.includes(askerName));
-    },
-    // 获取全部提问者列表
-    getAllAskers() {
-      const askers = new Set();
-      qaList.forEach(item => {
-        if (item.asker) askers.add(item.asker);
-      });
-      return Array.from(askers);
-    },
-    // 获取统计信息
-    getStats() {
-      return {
-        totalCount: qaList.length,
-        totalChars: qaList.reduce((acc, cur) => acc + cur.content.length, 0),
-        dateRange: {
-          earliest: qaList[qaList.length - 1].date,
-          latest: qaList[0].date
-        }
-      };
+  // 挂载辅助方法与属性，确保无论 HTML 将 QA_DATA 视为数组还是对象均能 100% 兼容
+  qaList.data = qaList;
+  qaList.getAll = function() {
+    return qaList;
+  };
+  qaList.getById = function(id) {
+    return qaList.find(function(item) { return item.id === Number(id); }) || null;
+  };
+  qaList.search = function(keyword) {
+    if (!keyword) return [];
+    var kw = keyword.toLowerCase();
+    return qaList.filter(function(item) {
+      return (item.title && item.title.toLowerCase().includes(kw)) ||
+             (item.content && item.content.toLowerCase().includes(kw)) ||
+             (item.asker && item.asker.toLowerCase().includes(kw));
+    });
+  };
+  qaList.getByAsker = function(askerName) {
+    if (!askerName) return [];
+    return qaList.filter(function(item) {
+      return item.asker && item.asker.includes(askerName);
+    });
+  };
+  qaList.getAllAskers = function() {
+    var askers = [];
+    qaList.forEach(function(item) {
+      if (item.asker && askers.indexOf(item.asker) === -1) {
+        askers.push(item.asker);
+      }
+    });
+    return askers;
+  };
+  qaList.getStats = function() {
+    var totalChars = 0;
+    for (var i = 0; i < qaList.length; i++) {
+      totalChars += (qaList[i].content ? qaList[i].content.length : 0);
     }
+    return {
+      totalCount: qaList.length,
+      totalChars: totalChars,
+      dateRange: {
+        earliest: qaList[qaList.length - 1].date,
+        latest: qaList[0].date
+      }
+    };
   };
 
-  return {
-    data: qaList,
-    ...helper
-  };
+  return qaList;
 }));
