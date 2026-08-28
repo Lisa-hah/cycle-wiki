@@ -275,152 +275,99 @@ body::before {
   box-shadow: 0 1px 0 var(--border);
 }
 
-/* ===== AI CHAT ===== */
-.ai-section {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 1.5rem 2rem 2.5rem;
-}
-
-.ai-card {
+/* ===== SEARCH ANSWER PANEL ===== */
+.search-answer {
+  max-width: 680px;
+  margin: 16px auto 0;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 2.5rem;
+  border-radius: 12px;
+  padding: 1.2rem 1.5rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  display: none;
+  animation: fadeUp 0.3s ease forwards;
+}
+
+.search-answer.visible { display: block; }
+
+.search-answer-header {
   display: flex;
   align-items: center;
-  gap: 3rem;
-  position: relative;
-  overflow: hidden;
-  animation: fadeUp 0.8s ease 0.45s forwards;
-  opacity: 0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-}
-
-.ai-card::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(160, 120, 24, 0.04) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.ai-info { flex: 1; }
-
-.ai-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(160, 120, 24, 0.08);
-  border: 1px solid rgba(160, 120, 24, 0.2);
-  color: var(--accent);
+  gap: 8px;
+  margin-bottom: 0.8rem;
   font-family: var(--mono);
   font-size: 0.7rem;
-  padding: 4px 12px;
-  border-radius: 20px;
-  margin-bottom: 1rem;
-  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
 }
 
-.ai-badge::before {
-  content: '';
+.search-answer-header .dot {
   width: 6px;
   height: 6px;
   background: var(--accent);
   border-radius: 50%;
-  animation: pulse 2s infinite;
+  animation: pulse 1.5s infinite;
 }
 
-.ai-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-
-.ai-desc {
-  color: var(--text-muted);
+.search-answer-body {
   font-size: 0.9rem;
-  line-height: 1.7;
+  line-height: 1.8;
+  color: #4a4238;
 }
 
-.ai-chat-area {
-  flex: 1;
-  max-width: 480px;
+.search-answer-body p {
+  margin-bottom: 0.6rem;
 }
 
-.ai-messages {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1rem;
-  height: 240px;
-  overflow-y: auto;
-  margin-bottom: 12px;
-  font-size: 0.85rem;
-  line-height: 1.7;
-}
-
-.ai-msg {
-  margin-bottom: 0.8rem;
-  padding: 8px 12px;
-  border-radius: 8px;
-}
-
-.ai-msg.user {
-  background: var(--surface-3);
+.search-answer-body strong {
   color: var(--text);
-  margin-left: 2rem;
 }
 
-.ai-msg.bot {
-  background: var(--accent-glow);
-  border: 1px solid rgba(160, 120, 24, 0.12);
-  margin-right: 1rem;
-}
-
-.ai-msg .source {
-  display: inline;
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  color: var(--accent-dim);
-  cursor: pointer;
-}
-
-.ai-msg .source:hover { color: var(--accent); text-decoration: underline; }
-
-.ai-msg .source-block {
-  margin-top: 8px;
-  padding-top: 6px;
+.search-answer-sources {
+  margin-top: 0.8rem;
+  padding-top: 0.6rem;
   border-top: 1px dashed rgba(160, 120, 24, 0.15);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
 }
 
-.ai-msg .source-item {
-  display: block;
+.search-answer-sources .label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-right: 4px;
+}
+
+.search-answer-sources .src {
   font-family: var(--mono);
   font-size: 0.65rem;
   color: var(--accent-dim);
+  background: var(--accent-glow);
+  border: 1px solid rgba(160, 120, 24, 0.15);
+  padding: 3px 10px;
+  border-radius: 4px;
   cursor: pointer;
-  padding: 2px 0;
-  transition: color 0.2s;
+  transition: all 0.2s;
+  text-decoration: none;
 }
 
-.ai-msg .source-item:hover {
-  color: var(--accent);
-  text-decoration: underline;
+.search-answer-sources .src:hover {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
-.ai-thinking {
+.search-answer-thinking {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   color: var(--text-dim);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
 }
 
-.ai-thinking .dot {
+.search-answer-thinking .dot {
   width: 4px;
   height: 4px;
   background: var(--accent);
@@ -428,44 +375,8 @@ body::before {
   animation: pulse 1.2s infinite;
 }
 
-.ai-thinking .dot:nth-child(2) { animation-delay: 0.2s; }
-.ai-thinking .dot:nth-child(3) { animation-delay: 0.4s; }
-
-.ai-input-row {
-  display: flex;
-  gap: 8px;
-}
-
-.ai-input {
-  flex: 1;
-  padding: 10px 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-family: var(--serif);
-  font-size: 0.85rem;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.ai-input:focus { border-color: var(--accent); }
-
-.ai-send {
-  padding: 10px 20px;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-family: var(--serif);
-  font-weight: 700;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-}
-
-.ai-send:hover { background: #846410; }
-.ai-send:active { transform: scale(0.97); }
+.search-answer-thinking .dot:nth-child(2) { animation-delay: 0.2s; }
+.search-answer-thinking .dot:nth-child(3) { animation-delay: 0.4s; }
 
 /* ===== FILTERS & CONTROLS ===== */
 .filters {
@@ -623,7 +534,7 @@ body::before {
   color: var(--text-dim);
   font-size: 1.2rem;
   transition: transform 0.3s, color 0.3s;
-  flex-shrink: 0;
+  flex-shrink:  0;
   margin-top: 2px;
 }
 
@@ -744,8 +655,6 @@ body::before {
 @media (max-width: 768px) {
   .hero-stats { gap: 1.5rem; }
   .stat-number { font-size: 2rem; }
-  .ai-card { flex-direction: column; gap: 1.5rem; padding: 1.5rem; }
-  .ai-chat-area { max-width: 100%; width: 100%; }
   .qa-answer-inner { padding-left: 1.5rem; }
   .qa-tags { display: none; }
   .nav-links { gap: 1rem; }
@@ -766,7 +675,6 @@ body::before {
     </a>
     <nav class="nav-links">
       <a href="#" class="active">问答</a>
-      <a href="#ai-section">AI 助手</a>
       <a href="#">关于</a>
     </nav>
   </div>
@@ -795,32 +703,16 @@ body::before {
     <span class="search-icon">⌕</span>
     <input type="text" class="search-box" id="searchInput" placeholder="搜索问题、关键词、标签……" autocomplete="off">
     <button class="search-clear" id="searchClear" title="清除搜索">✕</button>
-    <div class="search-hint">按 <kbd>/</kbd> 聚焦搜索 · 按 <kbd>Esc</kbd> 清除</div>
+    <div class="search-hint">按 <kbd>/</kbd> 聚焦搜索 · 按 <kbd>Esc</kbd> 清除 · 输入问题可智能匹配答案</div>
   </div>
-</section>
-
-<!-- AI CHAT -->
-<section class="ai-section" id="ai-section">
-  <div class="ai-card">
-    <div class="ai-info">
-      <div class="ai-badge">BETA</div>
-      <h2 class="ai-title">智能问答助手</h2>
-      <p class="ai-desc">
-        有疑问？直接提问，助手会从知识库中检索相关内容并组织回答。<br>
-        每个回答都会标注来源条目，方便溯源验证。
-      </p>
+  <!-- 智能回答面板 -->
+  <div class="search-answer" id="searchAnswer">
+    <div class="search-answer-header">
+      <span class="dot"></span>
+      <span>智能匹配结果</span>
     </div>
-    <div class="ai-chat-area">
-      <div class="ai-messages" id="aiMessages">
-        <div class="ai-msg bot">
-          你好！我可以基于知识库问答为你解答。试试问我点什么？
-        </div>
-      </div>
-      <div class="ai-input-row">
-        <input type="text" class="ai-input" id="aiInput" placeholder="输入你的问题……">
-        <button class="ai-send" id="aiSend">提问</button>
-      </div>
-    </div>
+    <div class="search-answer-body" id="searchAnswerBody"></div>
+    <div class="search-answer-sources" id="searchAnswerSources"></div>
   </div>
 </section>
 
@@ -829,7 +721,7 @@ body::before {
   <span class="filter-label">分类</span>
   <button class="filter-btn active" data-tag="all">全部</button>
   <div class="filter-controls">
-    <button class="toggle-all-btn" id="toggleAllBtn" onclick="toggleAllCards()">折叠全部</button>
+    <button class="toggle-all-btn" id="toggleAllBtn" onclick="toggleAllCards()">展开全部</button>
     <span class="filter-count" id="filterCount">显示 0 / 0</span>
   </div>
 </div>
@@ -858,17 +750,17 @@ body::before {
 const qaList = document.getElementById('qaList');
 const searchInput = document.getElementById('searchInput');
 const searchClear = document.getElementById('searchClear');
+const searchAnswer = document.getElementById('searchAnswer');
+const searchAnswerBody = document.getElementById('searchAnswerBody');
+const searchAnswerSources = document.getElementById('searchAnswerSources');
 const filtersContainer = document.getElementById('filters');
 const filterCount = document.getElementById('filterCount');
 const emptyState = document.getElementById('emptyState');
-const aiMessages = document.getElementById('aiMessages');
-const aiInput = document.getElementById('aiInput');
-const aiSend = document.getElementById('aiSend');
 const toggleAllBtn = document.getElementById('toggleAllBtn');
 
 let activeTag = 'all';
 let searchQuery = '';
-let isAllExpanded = true;
+let isAllExpanded = false; // 默认折叠
 
 // ============================================================
 //  初始化
@@ -935,7 +827,7 @@ function renderList() {
         }).join('')}
       </div>` : '';
     return `
-      <div class="qa-item open" data-id="${item.id}">
+      <div class="qa-item" data-id="${item.id}">
         <div class="qa-question" onclick="toggleQA(this.parentElement)">
           <span class="qa-number">#${String(item.id).padStart(2, '0')}</span>
           <span class="qa-q-text">${highlightText(item.q || '')}</span>
@@ -983,47 +875,18 @@ function clearSearch() {
   searchInput.value = '';
   searchQuery = '';
   searchClear.classList.remove('visible');
+  searchAnswer.classList.remove('visible');
   searchInput.focus();
   renderList();
 }
 
 // ============================================================
-//  事件监听
+//  智能匹配引擎
 // ============================================================
-filtersContainer.addEventListener('click', e => {
-  if (!e.target.classList.contains('filter-btn')) return;
-  filtersContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  e.target.classList.add('active');
-  activeTag = e.target.dataset.tag;
-  renderList();
-});
-
-let searchTimer;
-searchInput.addEventListener('input', () => {
-  const val = searchInput.value;
-  val.length > 0 ? searchClear.classList.add('visible') : searchClear.classList.remove('visible');
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => { searchQuery = val.trim().toLowerCase(); renderList(); }, 120);
-});
-searchClear.addEventListener('click', clearSearch);
-
-document.addEventListener('keydown', e => {
-  if (e.key === '/' && document.activeElement !== searchInput && document.activeElement !== aiInput) {
-    e.preventDefault(); searchInput.focus();
-  }
-  if (e.key === 'Escape') clearSearch();
-});
-
-// ============================================================
-//  智能问答：增强本地匹配
-// ============================================================
-
-// 去除 HTML 标签
 function stripHtml(html) {
   return (html || '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
-// 中文分词（按标点空格切分 + bigram）
 function tokenize(text) {
   const cleaned = text.toLowerCase().replace(/[^\u4e00-\u9fff\w]+/g, ' ').trim();
   const words = cleaned.split(/\s+/).filter(w => w.length > 0);
@@ -1035,7 +898,6 @@ function tokenize(text) {
   return [...new Set([...words, ...bigrams])];
 }
 
-// Jaccard 相似度
 function jaccardSimilarity(tokensA, tokensB) {
   const setA = new Set(tokensA);
   const setB = new Set(tokensB);
@@ -1044,114 +906,113 @@ function jaccardSimilarity(tokensA, tokensB) {
   return union.size === 0 ? 0 : intersection.length / union.size;
 }
 
-// 从答案中提取与问题最相关的句子
 function extractRelevantSentences(query, answerHtml, maxSentences) {
   const plain = stripHtml(answerHtml);
   const sentences = plain.split(/[。！？；\n]+/).map(s => s.trim()).filter(s => s.length > 8);
   if (sentences.length === 0) return [plain.slice(0, 200)];
-
   const queryTokens = tokenize(query);
   const scored = sentences.map(s => ({
     text: s,
     score: jaccardSimilarity(queryTokens, tokenize(s))
   })).sort((a, b) => b.score - a.score);
-
   const topTexts = new Set(scored.slice(0, maxSentences).map(s => s.text));
   return sentences.filter(s => topTexts.has(s)).slice(0, maxSentences);
 }
 
-// 增强本地检索
 function localSearch(query, topN) {
   const queryTokens = tokenize(query);
   const queryLower = query.toLowerCase();
-
   return QA_DATA.map(item => {
     const qTokens = tokenize(item.q || '');
     const aPlain = stripHtml(item.a || '');
     const aTokens = tokenize(aPlain);
     const tagStr = (item.tags || []).join(' ').toLowerCase();
-
     const qSim = jaccardSimilarity(queryTokens, qTokens);
     const aSim = jaccardSimilarity(queryTokens, aTokens);
-
     let directHit = 0;
     if ((item.q || '').toLowerCase().includes(queryLower)) directHit += 3;
     if (aPlain.toLowerCase().includes(queryLower)) directHit += 1;
     if (tagStr.includes(queryLower)) directHit += 1;
-
     return { ...item, score: qSim * 5 + aSim * 2 + directHit };
   }).filter(item => item.score > 0.05)
     .sort((a, b) => b.score - a.score)
     .slice(0, topN || 3);
 }
 
-// 从检索结果构建回答
-function buildAnswer(query, results) {
+function buildSearchAnswer(query, results) {
   if (results.length === 0) return null;
-
-  let html = '';
+  let bodyParts = [];
   let sources = [];
-
   results.forEach((item, i) => {
     const relevant = extractRelevantSentences(query, item.a, 3);
     if (relevant.length > 0) {
       const label = results.length > 1 ? `<strong>[${i + 1}]</strong> ` : '';
-      html += `<p>${label}${relevant.join('。')}。</p>`;
+      bodyParts.push(`<p>${label}${relevant.join('。')}。</p>`);
     }
     sources.push({ id: item.id, q: item.q });
   });
-
-  html += `<div class="source-block">`;
-  html += `<span style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);">📎 引用来源：</span><br>`;
-  sources.forEach(s => {
-    html += `<span class="source-item" onclick="scrollToQA(${s.id})">#${String(s.id).padStart(2, '0')} ${s.q.slice(0, 30)}${s.q.length > 30 ? '…' : ''}</span>`;
-  });
-  html += `</div>`;
-
-  return html;
+  return { body: bodyParts.join(''), sources };
 }
 
-// 主发送函数
-function sendAIMessage() {
-  const question = aiInput.value.trim();
-  if (!question || typeof QA_DATA === 'undefined') return;
+// ============================================================
+//  搜索逻辑：过滤列表 + 智能回答
+// ============================================================
+let searchTimer;
 
-  // 用户消息
-  const userDiv = document.createElement('div');
-  userDiv.className = 'ai-msg user';
-  userDiv.textContent = question;
-  aiMessages.appendChild(userDiv);
+function performSearch(query) {
+  searchQuery = query;
 
-  // 思考中
-  const thinkingDiv = document.createElement('div');
-  thinkingDiv.className = 'ai-msg bot';
-  thinkingDiv.innerHTML = '<span class="ai-thinking"><span class="dot"></span><span class="dot"></span><span class="dot"></span> 正在分析知识库</span>';
-  aiMessages.appendChild(thinkingDiv);
-  aiMessages.scrollTop = aiMessages.scrollHeight;
+  // 1. 过滤列表
+  renderList();
 
-  aiInput.value = '';
+  // 2. 智能回答（仅当输入 >= 2 个字符时触发）
+  if (query.length >= 2 && typeof QA_DATA !== 'undefined') {
+    const results = localSearch(query, 3);
+    const answer = buildSearchAnswer(query, results);
 
-  // 延迟 300ms 模拟思考，让动画可见
-  setTimeout(() => {
-    const results = localSearch(question, 5);
-    const answerHtml = buildAnswer(question, results);
-
-    if (answerHtml) {
-      thinkingDiv.innerHTML = answerHtml;
+    if (answer) {
+      searchAnswerBody.innerHTML = answer.body;
+      let srcHtml = '<span class="label">📎 引用来源：</span>';
+      answer.sources.forEach(s => {
+        srcHtml += `<span class="src" onclick="scrollToQA(${s.id})">#${String(s.id).padStart(2, '0')} ${s.q.slice(0, 25)}${s.q.length > 25 ? '…' : ''}</span>`;
+      });
+      searchAnswerSources.innerHTML = srcHtml;
+      searchAnswer.classList.add('visible');
     } else {
-      thinkingDiv.innerHTML = '抱歉，知识库中暂未找到与该问题相关的内容。<br>试试换个关键词提问？';
+      searchAnswer.classList.remove('visible');
     }
-
-    aiMessages.scrollTop = aiMessages.scrollHeight;
-  }, 300);
+  } else {
+    searchAnswer.classList.remove('visible');
+  }
 }
 
-aiSend.addEventListener('click', sendAIMessage);
-aiInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendAIMessage(); });
+searchInput.addEventListener('input', () => {
+  const val = searchInput.value;
+  val.length > 0 ? searchClear.classList.add('visible') : searchClear.classList.remove('visible');
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => performSearch(val.trim().toLowerCase()), 200);
+});
 
-// ============================================================
-//  初始化
-// ============================================================
+searchClear.addEventListener('click', clearSearch);
+
+// 标签筛选
+filtersContainer.addEventListener('click', e => {
+  if (!e.target.classList.contains('filter-btn')) return;
+  filtersContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeTag = e.target.dataset.tag;
+  renderList();
+});
+
+// 快捷键
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement !== searchInput) {
+    e.preventDefault(); searchInput.focus();
+  }
+  if (e.key === 'Escape') clearSearch();
+});
+
+// 初始化
 window.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
