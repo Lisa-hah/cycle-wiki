@@ -1080,12 +1080,19 @@ var QA_DATA = [
   }
 ];
 function formatContent(text) {
-  // 匹配 "一、" "二、" "三、" ... 或 "1." "2." "3." 等标题行
-  return text
-    .replace(/\n(一、[^\n]*)/g, '\n<strong>$1</strong>')
-    .replace(/\n(二、[^\n]*)/g, '\n<strong>$1</strong>')
-    .replace(/\n(三、[^\n]*)/g, '\n<strong>$1</strong>');
+  return text.replace(
+    /^(一|二|三|四|五|六|七|八|九|十)、(.+)$/gm,
+    '<strong>$1、$2</strong>'
+  );
 }
+
+// ✅ 关键：导出之前，把格式化应用到每条数据上
+QA_DATA.forEach(function(item) {
+  if (item.content)   item.content   = formatContent(item.content);
+  if (item.answer)    item.answer    = formatContent(item.answer);
+  if (item.a)         item.a         = formatContent(item.a);
+});
+
 // 挂载到全局 window / global / self
 if (typeof window !== 'undefined') {
     window.QA_DATA = QA_DATA;
